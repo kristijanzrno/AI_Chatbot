@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Electroncis Chatbot</title>
+    <link rel="stylesheet" type="text/css" href="../static/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+
+    <div class="chatbox" id="chatbox">
+        <div class="chatlogs" id="chatlogs">
+            <div class="chat bot">
+                <div class="user-photo"></div>
+                <p class="chat-message">Hello</p>
+            </div>
+    
+        </div>
+        <div class="chat-form" id="chat-form">
+            <textarea id="textInput" type="text" name="msg" placeholder="Ask something..."></textarea>
+            <button id="buttonInput" type="submit">Send</button>
+        </div>
+    </div>
+    <script>
+            function getBotResponse() {
+              var rawText = $("#textInput").val();
+              var userMessage = '<div class="chat self"><div class="user-photo"></div><p class="chat-message">' + rawText + '</p>';
+              var chatlog = document.getElementById("chatlogs");
+              $("#textInput").val("");
+              $("#chatlogs").append(userMessage);
+              chatlog.scrollTop = chatlog.scrollHeight;
+              $.get("/get", { msg: rawText }).done(function(data) {
+                var botMessage = '<div class="chat bot"><div class="user-photo"></div><p class="chat-message">' + data + '</p>';
+                $("#chatlogs").append(botMessage);
+                chatlog.scrollTop = chatlog.scrollHeight;
+              });
+            }
+            $("#textInput").keypress(function(e) {
+                if(e.which == 13) {
+                    getBotResponse();
+                }
+            });
+            $("#buttonInput").click(function() {
+              getBotResponse();
+            })
+          </script>
+</body>
+</html>
