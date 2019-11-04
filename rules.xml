@@ -44,32 +44,45 @@
 <category><pattern> WHEN IS THE * AT * </pattern>
   <template>#2$<star index="1"/>$<star index="2"/></template></category>
 
-<category><pattern> WHEN IS * AT *</pattern>
+<category><pattern> WHEN IS * AT * </pattern>
   <template><srai>WHEN IS THE <star index="1"/> AT <star index="2"/></srai></template></category>
 
-<category><pattern> WHAT TIME IS * AT *</pattern>
+<category><pattern> WHAT TIME IS * AT * </pattern>
   <template><srai>WHEN IS THE <star index="1"/> AT <star index="2"/></srai></template></category>
 
-  <category><pattern> WHAT TIME IS THE * AT *</pattern>
+  <category><pattern> WHAT TIME IS THE * AT * </pattern>
   <template><srai>WHEN IS THE <star index="1"/> AT <star index="2"/></srai></template></category>
 
-<category><pattern> AT WHAT TIME IS * AT *</pattern>
+<category><pattern> AT WHAT TIME IS * AT * </pattern>
   <template><srai>WHEN IS THE <star index="1"/> AT <star index="2"/></srai></template></category>
 
-<category><pattern> AT WHAT TIME IS THE * AT *</pattern>
+<category><pattern> AT WHAT TIME IS THE * AT * </pattern>
   <template><srai>WHEN IS THE <star index="1"/> AT <star index="2"/></srai></template></category>
 
-<category><pattern> AT WHICH TIME IS * AT *</pattern>
+<category><pattern> AT WHICH TIME IS * AT * </pattern>
   <template><srai>WHEN IS THE <star index="1"/> AT <star index="2"/></srai></template></category>
 
-<category><pattern> AT WHICH TIME IS THE * AT *</pattern>
+<category><pattern> AT WHICH TIME IS THE * AT * </pattern>
   <template><srai>WHEN IS THE <star index="1"/> AT <star index="2"/></srai></template></category>
 
-<category><pattern> WHICH TIME IS * AT *</pattern>
+<category><pattern> WHICH TIME IS * AT * </pattern>
   <template><srai>WHEN IS THE <star index="1"/> AT <star index="2"/></srai></template></category>
 
-<category><pattern> WHICH TIME IS THE* AT *</pattern>
+<category><pattern> WHICH TIME IS THE * AT * </pattern>
   <template><srai>WHEN IS THE <star index="1"/> AT <star index="2"/></srai></template></category>
+
+<category><pattern> WHEN DOES THE MOON RISE IN * </pattern>
+  <template><srai>WHEN IS THE moonrise AT <star/></srai></template></category>
+
+<category><pattern> WHEN DOES THE MOON SET IN * </pattern>
+  <template><srai>WHEN IS THE moonset AT <star/></srai></template></category>
+
+<category><pattern> WHEN DOES THE SUN RISE IN * </pattern>
+  <template><srai>WHEN IS THE sunrise AT <star/></srai></template></category>
+
+<category><pattern> WHEN DOES THE SUN SET IN * </pattern>
+  <template><srai>WHEN IS THE sunset AT <star/></srai></template></category>
+
 
 <!--- NASA API -->
 <category><pattern> WHAT IS A * </pattern>
