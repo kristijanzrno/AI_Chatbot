@@ -69,9 +69,28 @@ body {
   font-size: 18px;
 }
 
+
 .bot .chat-message {
   background: #FDE69E;
 }
+.bot .chat-photo{
+  width: 70%;
+  padding: 15px;
+  margin: 5px 10px 0;
+  background: #FDE69E;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 18px;
+  overflow: hidden;
+  align-items: center
+
+}
+.chat .chat-photo img{
+  width: 100%;
+  border-radius: 15px;
+  align-self: center;
+}
+
 .self .chat-message {
   background: #76A6EF;
   order: -1;

@@ -13,6 +13,9 @@ from flask import Flask, render_template, request
 
 ipgelocation_api_key = '064b4149765b496eb89050790ff10c68'
 ipgeolocation_api_url = 'https://api.ipgeolocation.io/astronomy?apiKey='
+nasa_api_key = 'MvHhdCMNgq2VF1Tcu1UJYKemsPyFPnGE7U9dbXtn'
+nasa_api_url = 'https://api.nasa.gov/planetary/apod?api_key='
+error_msg = 'Sorry, I could not find the answer... Please try again.'
 
 app = Flask(__name__)
 
@@ -61,7 +64,7 @@ def check_similarity(user_input):
     flat.sort()
     req_tfidf = flat[-2]
     if req_tfidf < 0.8:
-        response = 'Couldnt figure it out'
+        response = error_msg;
     else:
         response = answers[idx]
     questions.pop()
@@ -78,7 +81,7 @@ def process_query(user_input):
         if cmd == 0:
             return params[1]
         elif cmd == 1:
-           return ""
+            return fetch_pic_of_the_day()[int(params[1])]
         elif cmd == 2:
             return find_geolocation_info(attribute=params[1], address=params[2])
         elif cmd == 99:
@@ -87,21 +90,36 @@ def process_query(user_input):
     else:
         return answer
 
+
+
+def fetch_json(url):
+    response = requests.get(url)
+    if response.status_code == 200:
+        json_response = json.loads(response.content)
+        if(json_response):
+            return json_response
+    return None
+
+
 def find_geolocation_info(address, attribute):
             geolocator = Nominatim(user_agent="ai_chatbot_ntu", timeout=None)
             location = geolocator.geocode(address)
             if(location):
                 try:
                     url = ipgeolocation_api_url + ipgelocation_api_key + "&lat="+str(location.latitude) +"&long="+str(location.longitude)
-                    response = requests.get(url)
-                    if response.status_code == 200:
-                        json_response = json.loads(response.content)
-                        if(json_response):
-                            data = json_response[attribute]
-                            return('The ' + attribute + ' at ' + address + ' is at ' + data)
+                    json_response = fetch_json(url)
+                    if(json_response):
+                        data = json_response[attribute]
+                        return('The ' + attribute + ' at ' + address + ' is at ' + data)
                 except:
-                    return "Couldn't figure it out..."
-            return "Couldn't figure it out..." 
+                    return error_msg
+            return error_msg
+
+def fetch_pic_of_the_day():
+    url = nasa_api_url+nasa_api_key
+    json_response = fetch_json(url)
+    if(json_response):
+        return [json_response['explanation'],'img='+json_response['hdurl']]
 
 if __name__ == '__main__':
     app.run()

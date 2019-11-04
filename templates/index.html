@@ -38,10 +38,17 @@
         $("#chatlogs").append(userMessage);
         chatlog.scrollTop = chatlog.scrollHeight;
         $.get("/get", { msg: rawText }).done(function(data) {
-          var botMessage =
+          var botMessage;
+          if(data.startsWith("img=")){
+            botMessage = '<div class="chat bot"><div class="user-photo"><img src="../static/robot.png"></div><p class="chat-photo"> <img src="' +
+            data.slice(4) +
+            '"></p>';
+          }else{
+           botMessage =
             '<div class="chat bot"><div class="user-photo"><img src="../static/robot.png"></div><p class="chat-message">' +
             data +
-            "</p>";
+            '</p>';
+          }
           $("#chatlogs").append(botMessage);
           chatlog.scrollTop = chatlog.scrollHeight;
           document.getElementById("textInput").value='';
