@@ -18,6 +18,7 @@
           id="textInput"
           type="text"
           name="msg"
+          rows="1"
           placeholder="Ask something..."
         ></textarea>
         <button id="buttonInput" type="submit">Send</button>
@@ -26,6 +27,8 @@
     <script>
       function getBotResponse() {
         var rawText = $("#textInput").val();
+        rawText = rawText.replace(/^\s+|\s+$/g, '')
+        if(rawText==="")return;
         var userMessage =
           '<div class="chat self"><div class="user-photo"><img src="../static/user.png"></div><p class="chat-message">' +
           rawText +
@@ -41,6 +44,7 @@
             "</p>";
           $("#chatlogs").append(botMessage);
           chatlog.scrollTop = chatlog.scrollHeight;
+          document.getElementById("textInput").value='';
         });
       }
       $("#textInput").keypress(function(e) {

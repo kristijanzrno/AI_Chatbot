@@ -5,11 +5,11 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from flask import Flask, render_template, request
 
+#Uncomment on first use to download the library
+#nltk.download('wordnet')
 
 app = Flask(__name__)
 
-#sent_tokens = []
-#word_tokens = []
 questions = []
 answers = []
 
@@ -26,6 +26,43 @@ def home():
 def get_bot_response():
     text_input = request.args.get('msg')
     return str(process_query(text_input))
+
+lemmer = nltk.stem.WordNetLemmatizer()
+def lem_tokens(tokens):
+    return [lemmer.lemmatize(token) for token in tokens]
+
+remove_punct_dict = dict((ord(punct), None) for punct in string.punctuation)
+
+def lem_tokenizer(text):
+    return lem_tokens(nltk.word_tokenize(text.lower().translate(remove_punct_dict)))
+
+
+def load_data():
+    data = open('data.txt', 'r')
+    for line in data:
+        questions.append(line.split('::')[0].lower())
+        answers.append(line.split('::')[1])
+
+load_data()
+
+def check_similarity(user_input):
+    questions.append(user_input)
+    tfidf_vectorizer = TfidfVectorizer(tokenizer=lem_tokenizer, stop_words='english')
+    tf_matrix = tfidf_vectorizer.fit_transform(questions)
+    vals = cosine_similarity(tf_matrix[-1], tf_matrix)
+    idx = vals.argsort()[0][-2]
+    print(vals)
+    flat = vals.flatten()
+    print(flat)
+    flat.sort()
+    print(flat)
+    req_tfidf = flat[-2]
+    if req_tfidf < 0.8:
+        response = 'Couldnt figure it out'
+    else:
+        response = answers[idx]
+    questions.pop()
+    return response
 
 def process_query(user_input):
     response_agent = 'aiml'
@@ -46,43 +83,6 @@ def process_query(user_input):
             return check_similarity(user_input)
     else:
         return answer
-
-lemmer = nltk.stem.WordNetLemmatizer()
-def lem_tokens(tokens):
-    return [lemmer.lemmatize(token) for token in tokens]
-
-remove_punct_dict = dict((ord(punct), None) for punct in string.punctuation)
-
-def lem_tokenizer(text):
-    return lem_tokens(nltk.word_tokenize(text.lower().translate(remove_punct_dict)))
-
-
-def load_data():
-    data = open('data.txt', 'r')
-    for line in data:
-        questions.append(line.split('::')[0].lower())
-        answers.append(line.split('::')[1])
-    #nltk.download('wordnet')
-
-load_data()
-
-def check_similarity(user_input):
-    questions.append(user_input)
-    tfidf_vectorizer = TfidfVectorizer(tokenizer=lem_tokenizer, stop_words='english')
-    tf_matrix = tfidf_vectorizer.fit_transform(questions)
-    vals = cosine_similarity(tf_matrix[-1], tf_matrix)
-    idx = vals.argsort()[0][-2]
-    flat = vals.flatten()
-    flat.sort()
-    req_tfidf = flat[-2]
-    response = ''
-    if req_tfidf == 0:
-        response = 'Couldnt figure it out'
-    else:
-        response = answers[idx]
-    questions.pop()
-    return response
-
 
 
 if __name__ == '__main__':
