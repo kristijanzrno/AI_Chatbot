@@ -1,12 +1,17 @@
 import aiml
 import nltk
 import string
+import json, requests
+from geopy.geocoders import Nominatim
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from flask import Flask, render_template, request
 
 #Uncomment on first use to download the library
 #nltk.download('wordnet')
+
+ipgelocation_api_key = '064b4149765b496eb89050790ff10c68'
+ipgeolocation_api_url = 'https://api.ipgeolocation.io/astronomy?apiKey='
 
 app = Flask(__name__)
 
@@ -51,11 +56,8 @@ def check_similarity(user_input):
     tf_matrix = tfidf_vectorizer.fit_transform(questions)
     vals = cosine_similarity(tf_matrix[-1], tf_matrix)
     idx = vals.argsort()[0][-2]
-    print(vals)
     flat = vals.flatten()
-    print(flat)
     flat.sort()
-    print(flat)
     req_tfidf = flat[-2]
     if req_tfidf < 0.8:
         response = 'Couldnt figure it out'
@@ -75,6 +77,15 @@ def process_query(user_input):
         if cmd == 0:
             return params[1]
         elif cmd == 1:
+            geolocator = Nominatim(user_agent="Astronomy Chatbot")
+            location = geolocator.geocode(params[2])
+            if(location):
+                response = requests.get(ipgeolocation_api_url + ipgelocation_api_key + "&lat="+location.latitude +"&long"+location.longitude)
+                if response.status_code == 200:
+                    json_response = json.loads(response.content)
+                    if(json_response):
+                        data = json_response['main'][params[1]]
+                        return('The ' + params[1] + 'at' + params[2] + 'is at' + data)
             return "wikipedia article"
         elif cmd == 2:
             return ""

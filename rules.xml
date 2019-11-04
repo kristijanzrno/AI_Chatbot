@@ -40,14 +40,20 @@
 <category> <pattern> CHEERS * </pattern>
   <template>Sure mate.</template></category>
 
-<!-- Weather API -->
-<category><pattern> WHAT IS THE WEATHER LIKE IN * </pattern>
-  <template>#2$<star/></template></category>
+<!-- IPGEOLOCATION API -->
+<category><pattern> WHEN IS THE SUNRISE AT * </pattern>
+  <template>#2$sunrise$<star/></template></category>
 
-<category><pattern> HOW IS THE WEATHER IN * </pattern>
-  <template><srai>WHAT IS THE WEATHER LIKE IN <star/></srai></template></category>
+<category><pattern> WHEN IS THE SUNSET AT * </pattern>
+  <template>#2$sunset$<star/></template></category>
 
-<!--- Wikipedia API -->
+<category><pattern> WHEN IS THE MOONRISE AT * </pattern>
+  <template>#2$moonrise$<star/></template></category>
+
+<category><pattern> WHEN IS THE MOONSET AT * </pattern>
+  <template>#2$moonset$<star/></template></category>
+
+<!--- NASA API -->
 <category><pattern> WHAT IS A * </pattern>
   <template>#1$<star index="1"/></template></category>
 
