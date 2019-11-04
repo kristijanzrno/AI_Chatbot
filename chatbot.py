@@ -17,7 +17,7 @@ nasa_api_key = 'MvHhdCMNgq2VF1Tcu1UJYKemsPyFPnGE7U9dbXtn'
 nasa_api_url = 'https://api.nasa.gov/planetary/apod?api_key='
 astrobin_api_key = '6dd236d199c8b291509e52ffed9761d79ee305ec'
 astrobin_api_secret = '69077fef211155bbc60d98207dafa27830221bc0'
-astrobin_api_url = 'https://www.astrobin.com/api/v1/image/?subjects='
+astrobin_api_url = 'https://www.astrobin.com/api/v1/image/?title__icontains='
 
 error_msg = 'Sorry, I could not find the answer... Please try again.'
 
@@ -121,11 +121,14 @@ def find_geolocation_info(address, attribute):
 def fetch_pic_of_the_day():
     url = nasa_api_url+nasa_api_key
     json_response = fetch_json(url)
-    if(json_response):
-        return [json_response['explanation'],'img='+json_response['hdurl'], json_response['copyright']]
+    try:
+        if(json_response):
+            return [json_response['explanation'],'img='+json_response['hdurl'], json_response['copyright']]
+    except:
+        return error_msg
 
 def find_astrophotography(search_term):
-    url = astrobin_api_url + search_term + '/?limit=1&api_key=' + astrobin_api_key + '&api_secret='+astrobin_api_secret+'&format=json'
+    url = astrobin_api_url + search_term + '&limit=1&api_key=' + astrobin_api_key + '&api_secret='+astrobin_api_secret+'&format=json'
     print(url)
     json_response = fetch_json(url)
     try:
