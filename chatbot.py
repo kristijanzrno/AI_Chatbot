@@ -15,6 +15,10 @@ ipgelocation_api_key = '064b4149765b496eb89050790ff10c68'
 ipgeolocation_api_url = 'https://api.ipgeolocation.io/astronomy?apiKey='
 nasa_api_key = 'MvHhdCMNgq2VF1Tcu1UJYKemsPyFPnGE7U9dbXtn'
 nasa_api_url = 'https://api.nasa.gov/planetary/apod?api_key='
+astrobin_api_key = '6dd236d199c8b291509e52ffed9761d79ee305ec'
+astrobin_api_secret = '69077fef211155bbc60d98207dafa27830221bc0'
+astrobin_api_url = 'https://www.astrobin.com/api/v1/image/?subjects='
+
 error_msg = 'Sorry, I could not find the answer... Please try again.'
 
 app = Flask(__name__)
@@ -84,13 +88,13 @@ def process_query(user_input):
             return fetch_pic_of_the_day()[int(params[1])]
         elif cmd == 2:
             return find_geolocation_info(attribute=params[1], address=params[2])
+        elif cmd == 3:
+            return find_astrophotography(params[1])
         elif cmd == 99:
             #similarity component
             return check_similarity(user_input)
     else:
         return answer
-
-
 
 def fetch_json(url):
     response = requests.get(url)
@@ -99,7 +103,6 @@ def fetch_json(url):
         if(json_response):
             return json_response
     return None
-
 
 def find_geolocation_info(address, attribute):
             geolocator = Nominatim(user_agent="ai_chatbot_ntu", timeout=None)
@@ -120,6 +123,19 @@ def fetch_pic_of_the_day():
     json_response = fetch_json(url)
     if(json_response):
         return [json_response['explanation'],'img='+json_response['hdurl'], json_response['copyright']]
+
+def find_astrophotography(search_term):
+    url = astrobin_api_url + search_term + '/?limit=1&api_key=' + astrobin_api_key + '&api_secret='+astrobin_api_secret+'&format=json'
+    print(url)
+    json_response = fetch_json(url)
+    try:
+        if(json_response):
+            image = json_response['objects'][0]['url_hd']
+            return('img='+image)
+    except:
+        return error_msg
+    return error_msg
+
 
 if __name__ == '__main__':
     app.run()

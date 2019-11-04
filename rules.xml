@@ -94,6 +94,10 @@
 <category><pattern> WHO IS THE NASA PHOTO OF THE DAY AUTHOR </pattern>
 <template>#1$2</template></category>
 
+
+<category><pattern> SHOW ME AN IMAGE OF * </pattern>
+  <template>#3$<star/></template></category>
+
 <!-- Default reaction -->
 <category><pattern> * </pattern>
   <template>#99$<star index="1"/></template></category>
