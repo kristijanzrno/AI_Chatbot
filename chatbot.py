@@ -3,6 +3,7 @@ import nltk
 import string
 import json, requests
 from geopy.geocoders import Nominatim
+from geopy.exc import GeocoderTimedOut
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from flask import Flask, render_template, request
@@ -77,18 +78,20 @@ def process_query(user_input):
         if cmd == 0:
             return params[1]
         elif cmd == 1:
-            geolocator = Nominatim(user_agent="Astronomy Chatbot")
-            location = geolocator.geocode(params[2])
+           return ""
+        elif cmd == 2:
+            geolocator = Nominatim()
+            location = geolocator.geocode(params[2], timeout=None)
             if(location):
-                response = requests.get(ipgeolocation_api_url + ipgelocation_api_key + "&lat="+location.latitude +"&long"+location.longitude)
+                url = ipgeolocation_api_url + ipgelocation_api_key + "&lat="+str(location.latitude) +"&long="+str(location.longitude)
+                print(url)
+                response = requests.get(url)
                 if response.status_code == 200:
                     json_response = json.loads(response.content)
                     if(json_response):
-                        data = json_response['main'][params[1]]
-                        return('The ' + params[1] + 'at' + params[2] + 'is at' + data)
-            return "wikipedia article"
-        elif cmd == 2:
-            return ""
+                        data = json_response[params[1]]
+                        return('The ' + params[1] + 'at' + params[2] + 'is at ' + data)
+            return "Couldn't figure it out." 
         elif cmd == 99:
             #similarity component
             return check_similarity(user_input)
