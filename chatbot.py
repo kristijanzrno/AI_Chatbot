@@ -1,5 +1,6 @@
 import aiml
 import nltk
+nltk.download('punkt')
 import string
 from flask import Flask, render_template, request
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -53,6 +54,8 @@ def load_data():
     sent_tokens = nltk.sent_tokenize(raw)
     word_tokens = nltk.word_tokenize(raw)
 
+load_data()
+
 def LemTokens(tokens):
     return [lemmer.lemmatize(token) for token in tokens]
 
@@ -78,7 +81,7 @@ def check_similarity(user_input):
         result = result + sent_tokens[idx]
     return result
 
-load_data()
+
 
 if __name__ == '__main__':
     app.run()
