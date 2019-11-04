@@ -80,18 +80,20 @@ def process_query(user_input):
         elif cmd == 1:
            return ""
         elif cmd == 2:
-            geolocator = Nominatim()
-            location = geolocator.geocode(params[2], timeout=None)
+            geolocator = Nominatim(user_agent="ai_chatbot_ntu", timeout=None)
+            location = geolocator.geocode(params[2])
             if(location):
-                url = ipgeolocation_api_url + ipgelocation_api_key + "&lat="+str(location.latitude) +"&long="+str(location.longitude)
-                print(url)
-                response = requests.get(url)
-                if response.status_code == 200:
-                    json_response = json.loads(response.content)
-                    if(json_response):
-                        data = json_response[params[1]]
-                        return('The ' + params[1] + 'at' + params[2] + 'is at ' + data)
-            return "Couldn't figure it out." 
+                try:
+                    url = ipgeolocation_api_url + ipgelocation_api_key + "&lat="+str(location.latitude) +"&long="+str(location.longitude)
+                    response = requests.get(url)
+                    if response.status_code == 200:
+                        json_response = json.loads(response.content)
+                        if(json_response):
+                            data = json_response[params[1]]
+                            return('The ' + params[1] + ' at ' + params[2] + ' is at ' + data)
+                except:
+                    return "Couldn't figure it out..."
+            return "Couldn't figure it out..." 
         elif cmd == 99:
             #similarity component
             return check_similarity(user_input)
