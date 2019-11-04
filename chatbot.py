@@ -1,6 +1,5 @@
 import aiml
 import nltk
-nltk.download('punkt')
 import string
 from flask import Flask, render_template, request
 from sklearn.feature_extraction.text import TfidfVectorizer

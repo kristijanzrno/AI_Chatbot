@@ -9,7 +9,7 @@
     <div class="chatbox" id="chatbox">
       <div class="chatlogs" id="chatlogs">
         <div class="chat bot">
-          <div class="user-photo"><img src="../src/robot.png"></div>
+          <div class="user-photo"><img src="../static/robot.png"></div>
           <p class="chat-message">Hello</p>
         </div>
       </div>
@@ -27,7 +27,7 @@
       function getBotResponse() {
         var rawText = $("#textInput").val();
         var userMessage =
-          '<div class="chat self"><div class="user-photo"><img src="../src/user.png"></div><p class="chat-message">' +
+          '<div class="chat self"><div class="user-photo"><img src="../static/user.png"></div><p class="chat-message">' +
           rawText +
           "</p>";
         var chatlog = document.getElementById("chatlogs");
@@ -36,7 +36,7 @@
         chatlog.scrollTop = chatlog.scrollHeight;
         $.get("/get", { msg: rawText }).done(function(data) {
           var botMessage =
-            '<div class="chat bot"><div class="user-photo"><img src="../src/robot.png"></div><p class="chat-message">' +
+            '<div class="chat bot"><div class="user-photo"><img src="../static/robot.png"></div><p class="chat-message">' +
             data +
             "</p>";
           $("#chatlogs").append(botMessage);
