@@ -8,9 +8,10 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-sent_tokens = []
-word_tokens = []
-lemmer = nltk.stem.WordNetLemmatizer()
+#sent_tokens = []
+#word_tokens = []
+questions = []
+answers = []
 
 kernel = aiml.Kernel()
 kernel.setTextEncoding(None)
@@ -46,40 +47,41 @@ def process_query(user_input):
     else:
         return answer
 
-def load_data():
-    data = open('data.txt', 'r')
-    raw = data.read().lower()
-    nltk.download('punkt') # first-time use only
-    nltk.download('wordnet') # first-time use only
-    sent_tokens = nltk.sent_tokenize(raw)
-    word_tokens = nltk.word_tokenize(raw)
-
-load_data()
-
-def LemTokens(tokens):
+lemmer = nltk.stem.WordNetLemmatizer()
+def lem_tokens(tokens):
     return [lemmer.lemmatize(token) for token in tokens]
 
 remove_punct_dict = dict((ord(punct), None) for punct in string.punctuation)
 
-def LemNormalize(text):
-    return LemTokens(nltk.word_tokenize(text.lower().translate(remove_punct_dict)))
+def lem_tokenizer(text):
+    return lem_tokens(nltk.word_tokenize(text.lower().translate(remove_punct_dict)))
 
+
+def load_data():
+    data = open('data.txt', 'r')
+    for line in data:
+        questions.append(line.split('::')[0].lower())
+        answers.append(line.split('::')[1])
+    #nltk.download('wordnet')
+
+load_data()
 
 def check_similarity(user_input):
-    result = ''
-    sent_tokens.append(user_input)
-    TfidfVec = TfidfVectorizer(tokenizer=LemNormalize, stop_words='english')
-    tfdif = TfidfVec.fit_transform(sent_tokens)
-    vals = cosine_similarity(tfdif[-1], tfdif)
+    questions.append(user_input)
+    tfidf_vectorizer = TfidfVectorizer(tokenizer=lem_tokenizer, stop_words='english')
+    tf_matrix = tfidf_vectorizer.fit_transform(questions)
+    vals = cosine_similarity(tf_matrix[-1], tf_matrix)
     idx = vals.argsort()[0][-2]
     flat = vals.flatten()
     flat.sort()
-    req_tfdif = flat[-2]
-    if(req_tfdif == 0):
-        result = result + "I'm sorry, I couldnt understand you."
+    req_tfidf = flat[-2]
+    response = ''
+    if req_tfidf == 0:
+        response = 'Couldnt figure it out'
     else:
-        result = result + sent_tokens[idx]
-    return result
+        response = answers[idx]
+    questions.pop()
+    return response
 
 
 
