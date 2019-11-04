@@ -91,6 +91,8 @@
 <category><pattern> SHOW ME NASA PHOTO OF THE DAY DESCRIPTION </pattern>
 <template>#1$0</template></category>
 
+<category><pattern> WHO IS THE NASA PHOTO OF THE DAY AUTHOR </pattern>
+<template>#1$2</template></category>
 
 <!-- Default reaction -->
 <category><pattern> * </pattern>

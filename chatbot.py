@@ -119,7 +119,7 @@ def fetch_pic_of_the_day():
     url = nasa_api_url+nasa_api_key
     json_response = fetch_json(url)
     if(json_response):
-        return [json_response['explanation'],'img='+json_response['hdurl']]
+        return [json_response['explanation'],'img='+json_response['hdurl'], json_response['copyright']]
 
 if __name__ == '__main__':
     app.run()
