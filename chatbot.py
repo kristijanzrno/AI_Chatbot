@@ -1,3 +1,4 @@
+
 import aiml
 import nltk
 import string
@@ -8,6 +9,9 @@ from geopy.exc import GeocoderTimedOut
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from flask import Flask, render_template, request
+
+# Important Note; The console will output the link where the Chatbot can be accessed in (Usually: http://127.0.0.1:5000/)
+# Please enter that link to interact with the chatbot 
 
 # Uncomment on first use to download the library
 # nltk.download('wordnet')
@@ -222,5 +226,8 @@ def find_astrophotography(search_term):
         return error_msg
 
 if __name__ == '__main__':
+    # Load the data from the text file and start the flask website
+    # Note, the console will output the link where the Chatbot can be accessed in (Usually: http://127.0.0.1:5000/)
+    # Please enter that link to interact with the chatbot 
     load_data()
     app.run()
