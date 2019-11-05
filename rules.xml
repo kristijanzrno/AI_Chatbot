@@ -1,5 +1,4 @@
 <aiml version="1.0.1" encoding="UTF-8">
-
 <!-- Greetings and Politeness -->
 <category> <pattern> HELLO </pattern>
   <template>
@@ -10,7 +9,8 @@
   <li>Hi, how can I help you?</li>
   <li>Greetings...</li>
   </random>
-  </template> </category>
+  </template>
+</category>
 
 <category> <pattern> HELLO * </pattern>
   <template><srai>HELLO</srai></template></category>
@@ -36,7 +36,8 @@
   <li>Hope to see you again!</li>
   <li>Take care!</li>
   </random>
-  </template></category>
+  </template>
+</category>
 
 <category><pattern> GOODBYE </pattern>
   <template><srai>BYE</srai></template></category>
@@ -44,10 +45,10 @@
 <category><pattern> EXIT </pattern>
   <template><srai>BYE</srai></template></category>
 
-  <category><pattern> SEE YOU </pattern>
+<category><pattern> SEE YOU </pattern>
   <template><srai>BYE</srai></template></category>
 
-<category> <pattern> THANKS </pattern>
+<category><pattern> THANKS </pattern>
   <template>
   <random>
   <li>No problem!</li>
@@ -56,15 +57,16 @@
   <li>It's my pleasure!</li>
   <li>Any time!</li>
   </random>
-  </template></category>
+  </template>
+</category>
 
-<category> <pattern> THANK YOU </pattern>
+<category><pattern> THANK YOU </pattern>
   <template><srai>THANKS</srai></template></category>
 
-<category> <pattern> CHEERS </pattern>
+<category><pattern> CHEERS </pattern>
   <template><srai>THANKS</srai></template></category>
 
-<category> <pattern> CHEERS * </pattern>
+<category><pattern> CHEERS * </pattern>
   <template><srai>THANKS</srai></template></category>
 
 <!-- IPGEOLOCATION API -->
@@ -77,7 +79,7 @@
 <category><pattern> WHAT TIME IS * AT * </pattern>
   <template><srai>WHEN IS THE <star index="1"/> AT <star index="2"/></srai></template></category>
 
-  <category><pattern> WHAT TIME IS THE * AT * </pattern>
+<category><pattern> WHAT TIME IS THE * AT * </pattern>
   <template><srai>WHEN IS THE <star index="1"/> AT <star index="2"/></srai></template></category>
 
 <category><pattern> AT WHAT TIME IS * AT * </pattern>
@@ -115,9 +117,10 @@
 <category><pattern> NASA * OF THE DAY </pattern>
   <template>#1$1</template></category>
 
-<category><pattern> SHOW ME NASA * OF THE DAY </pattern>
-  <template><srai>NASA <star/> OF THE DAY</srai></template></category>
-
+<!--- Since a query containing: nasa, of, the, day; it's safe to assume that 
+      the user is looking for NASA photo of the day. Therefore, first star
+      representes action (show, display, lookup) and second one photo (image, picture) -->
+    
 <category><pattern> * ME NASA * OF THE DAY </pattern>
   <template><srai>NASA PHOTO OF THE DAY</srai></template></category>
 
@@ -125,7 +128,7 @@
   <template><srai>NASA PHOTO OF THE DAY</srai></template></category>
 
 <category><pattern> NASA * OF THE DAY DESCRIPTION </pattern>
-<template>#1$0</template></category>
+  <template>#1$0</template></category>
 
 <category><pattern> * ME NASA * OF THE DAY DESCRIPTION </pattern>
   <template><srai>NASA PHOTO OF THE DAY DESCRIPTION</srai></template></category>
@@ -137,7 +140,7 @@
   <template><srai>NASA PHOTO OF THE DAY DESCRIPTION</srai></template></category>
 
 <category><pattern> WHO IS THE NASA * OF THE DAY AUTHOR </pattern>
-<template>#1$2</template></category>
+  <template>#1$2</template></category>
 
 <category><pattern> WHO IS NASA * OF THE DAY AUTHOR </pattern>
   <template><srai>WHO IS THE NASA <star/> OF THE DAY AUTHOR</srai></template></category>
@@ -154,40 +157,40 @@
 <category><pattern> SHOW ME AN IMAGE OF * </pattern>
   <template>#3$<star/></template></category>
 
-  <category><pattern> SHOW AN IMAGE OF * </pattern>
+<category><pattern> SHOW AN IMAGE OF * </pattern>
+  <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
+ 
+<category><pattern> SHOW ME A PHOTO OF * </pattern>
   <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
 
-  <category><pattern> SHOW ME A PHOTO OF * </pattern>
+<category><pattern> SHOW A PHOTO OF * </pattern>
   <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
 
-  <category><pattern> SHOW A PHOTO OF * </pattern>
+<category><pattern> FIND ME AN IMAGE OF * </pattern>
   <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
 
-  <category><pattern> FIND ME AN IMAGE OF * </pattern>
+<category><pattern> FIND AN IMAGE OF * </pattern>
   <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
 
-  <category><pattern> FIND AN IMAGE OF * </pattern>
+<category><pattern> FIND ME A PHOTO OF * </pattern>
   <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
 
-  <category><pattern> FIND ME A PHOTO OF * </pattern>
+<category><pattern> FIND A PHOTO OF * </pattern>
   <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
 
-   <category><pattern> FIND A PHOTO OF * </pattern>
+<category><pattern> DISPLAY ME AN IMAGE OF * </pattern>
   <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
 
-    <category><pattern> DISPLAY ME AN IMAGE OF * </pattern>
+<category><pattern> DISPLAY AN IMAGE OF * </pattern>
   <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
 
-  <category><pattern> DISPLAY AN IMAGE OF * </pattern>
+<category><pattern> DISPLAY ME A PHOTO OF * </pattern>
   <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
 
-  <category><pattern> DISPLAY ME A PHOTO OF * </pattern>
+<category><pattern> DISPLAY A PHOTO OF * </pattern>
   <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
 
-   <category><pattern> DISPLAY A PHOTO OF * </pattern>
-  <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
-
- <category><pattern> * DOES * LOOK LIKE </pattern>
+<category><pattern> * DOES * LOOK LIKE </pattern>
   <template><srai>SHOW ME AN IMAGE OF <star index = "2"/></srai></template></category>
 
 <!-- Default reaction -->
