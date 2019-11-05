@@ -1,6 +1,6 @@
 <aiml version="1.0.1" encoding="UTF-8">
 <!-- Greetings and Politeness -->
-<category> <pattern> HELLO </pattern>
+<category><pattern> HELLO </pattern>
   <template>
   <random>
   <li>Hi there!</li>
@@ -12,16 +12,16 @@
   </template>
 </category>
 
-<category> <pattern> HELLO * </pattern>
+<category><pattern> HELLO * </pattern>
   <template><srai>HELLO</srai></template></category>
 
-<category> <pattern> HI </pattern>
+<category><pattern> HI </pattern>
   <template><srai>HELLO</srai></template></category>
 
-<category> <pattern> HI * </pattern>
+<category><pattern> HI * </pattern>
   <template><srai>HELLO</srai></template></category>
 
-<category> <pattern> HOW ARE YOU </pattern>
+<category><pattern> HOW ARE YOU </pattern>
   <template>I'm functioning within normal parameters, thanks for asking.</template></category>
 
 <category><pattern> I AM FINE </pattern>
@@ -122,6 +122,9 @@
       representes action (show, display, lookup) and second one photo (image, picture) -->
     
 <category><pattern> * ME NASA * OF THE DAY </pattern>
+  <template><srai>NASA PHOTO OF THE DAY</srai></template></category>
+
+<category><pattern> * NASA * OF THE DAY </pattern>
   <template><srai>NASA PHOTO OF THE DAY</srai></template></category>
 
 <category><pattern> WHAT IS NASA * OF THE DAY </pattern>
