@@ -25,7 +25,7 @@
       </div>
     </div>
     <script>
-      function getBotResponse() {
+      function getBotAnswer() {
         var rawText = $("#textInput").val();
         rawText = rawText.replace(/^\s+|\s+$/g, '')
         if(rawText==="")return;
@@ -56,11 +56,11 @@
       }
       $("#textInput").keypress(function(e) {
         if (e.which == 13) {
-          getBotResponse();
+          getBotAnswer();
         }
       });
       $("#buttonInput").click(function() {
-        getBotResponse();
+        getBotAnswer();
       });
     </script>
   </body>

@@ -1,6 +1,7 @@
 html {
   height: 100%;
 }
+
 * {
   margin: 0;
   padding: 0;
@@ -34,6 +35,7 @@ body {
 .chatlogs::-webkit-scrollbar {
   width: 10px;
 }
+
 .chatlogs::-webkit-scrollbar-thumb {
   border-radius: 5px;
   background: rgba(0, 0, 0, 0.1);
@@ -52,11 +54,10 @@ body {
   background: #ccc;
   border-radius: 50%;
   overflow: hidden;
-
 }
 
-.chat .user-photo img{
-    width: 100%;
+.chat .user-photo img {
+  width: 100%;
 }
 
 .chat .chat-message {
@@ -69,11 +70,11 @@ body {
   font-size: 18px;
 }
 
-
 .bot .chat-message {
   background: #FDE69E;
 }
-.bot .chat-photo{
+
+.bot .chat-photo {
   width: 70%;
   padding: 15px;
   margin: 5px 10px 0;
@@ -83,9 +84,9 @@ body {
   font-size: 18px;
   overflow: hidden;
   align-items: center
-
 }
-.chat .chat-photo img{
+
+.chat .chat-photo img {
   width: 100%;
   border-radius: 15px;
   align-self: center;
@@ -101,6 +102,7 @@ body {
   display: flex;
   align-items: flex;
 }
+
 .chat-form textarea {
   background: #fbfbfb;
   width: 75%;
@@ -120,6 +122,7 @@ body {
 .chat-form textarea::-webkit-scrollbar {
   width: 10px;
 }
+
 .chat-form textarea::-webkit-scrollbar-thumb {
   border-radius: 5px;
   background: rgba(0, 0, 0, 0.1);
