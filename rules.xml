@@ -25,7 +25,7 @@
   <template>I'm functioning within normal parameters, thanks for asking.</template></category>
 
 <category><pattern> I AM FINE </pattern>
-  <template>That's good to know. What would you like to discuss regarding urban agriculture?</template></category>
+  <template>That's good to know. What would you like to discuss regarding Astronomy?</template></category>
 
 <category><pattern> BYE </pattern>
   <template>#0$
