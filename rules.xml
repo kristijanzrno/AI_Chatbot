@@ -100,7 +100,7 @@
   <template><srai>NASA <star/> OF THE DAY</srai></template></category>
 
 <category><pattern> * ME NASA * OF THE DAY </pattern>
-  <template><srai>NASA <star index="2"/> OF THE DAY</srai></template></category>
+  <template><srai>NASA PHOTO OF THE DAY</srai></template></category>
 
 <category><pattern> NASA * OF THE DAY DESCRIPTION </pattern>
 <template>#1$0</template></category>
@@ -115,18 +115,28 @@
   <template><srai>WHO IS THE NASA <star/> OF THE DAY AUTHOR</srai></template></category>
 
 <!--- Astrobin API, used for astrophotography search -->
-<category><pattern> SHOW ME AN IMAGE OF * </pattern>
-  <template>#3$<star/></template></category>
+<category><pattern> SHOW ME * IMAGE OF * </pattern>
+  <template>#3$<star index="2"/></template></category>
 
   <category><pattern> FIND AN IMAGE OF * </pattern>
-  <template><srai>SHOW ME AN IMAGE OF <star/>< /srai></template></category>
+  <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
 
   <category><pattern> SHOW AN IMAGE OF * </pattern>
   <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
 
-  <category><pattern> DISPLAY AN IMAGE OF * </pattern>
+   <category><pattern> DISPLAY AN IMAGE OF * </pattern>
   <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
 
+   <category><pattern> FIND A PHOTO OF * </pattern>
+  <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
+
+  <category><pattern> SHOW A PHOTO OF * </pattern>
+  <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
+
+ <category><pattern> DISPLAY A PHOTO OF * </pattern>
+  <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
+
+ 
 <!-- Default reaction -->
 <category><pattern> * </pattern>
   <template>#99$<star index="1"/></template></category>
