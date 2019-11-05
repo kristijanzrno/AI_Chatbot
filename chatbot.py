@@ -120,16 +120,27 @@ def process_query(user_input):
             # But this space is left for any future upgrades
             return params[1]
         elif cmd == 1:
+            # When parsed aiml response starts with #1, fetch NASA picture of the day and display it
+            # Created fetch_pic_of_the_day function gives a result in format [description, picture, author]
+            # And based on the question parameters, one of those 3 will be displayed
             return fetch_pic_of_the_day()[int(params[1])]
         elif cmd == 2:
+            # When parsed aiml respone starts with #2, it means that the user wants one of the following information:
+            # sunrise time, sunset time, moonrise time, moonset time at a specific location
             return find_geolocation_info(attribute=params[1], address=params[2])
         elif cmd == 3:
-            return find_astrophotography(params[1])
+            # When parsed aiml respone starts with #2, it means that the user is searching for astrophotography photos
+            return find_astrophotography(search_term=params[1])
         elif cmd == 99:
+            # If the user question doesnt match any of the above queries, check the similarity of the query
+            # with the questions loaded from 'data.txt' file; if any of them are matching enough (>0.8) 
+            # return the answer to it
             return check_similarity(user_input)
     else:
         return answer
 
+# Function created to fetch json data
+# and return a null object if the fetching has failed
 def fetch_json(url):
     response = requests.get(url)
     if response.status_code == 200:
@@ -138,6 +149,8 @@ def fetch_json(url):
             return json_response
     return None
 
+# Function created to extract json data by object name
+# and return either an error message or an null object depending on the case
 def extract_single_json_object(json_data, json_object_name, return_error):
     try:
         return json_data[json_object_name]
@@ -146,6 +159,8 @@ def extract_single_json_object(json_data, json_object_name, return_error):
             return error_msg
     return None
 
+# Function created to find sunset, sunrise, moonset, moonrise data for a
+# user specified location
 def find_geolocation_info(address, attribute):
             geolocator = Nominatim(user_agent="ai_chatbot_ntu", timeout=None, scheme='http')
             location = geolocator.geocode(address)
