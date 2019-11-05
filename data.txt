@@ -114,6 +114,66 @@ How many moons does Neptune have?::14
 How many moons does Pluto have?::5
 How Far Away From Earth, Is Space?::In fact, space is said to begin just 100km above the surface of the earth so if you were in a rocket then you would not need to travel for too long to hit space.When you look in the sky to the moon for instance you actually only need to travel a tiny, tiny fraction of the way to the moon to enter space.
 How Does Gravity Affect Life On Pluto?::Well, there is much less gravity no Pluto than there is on the planet Earth. Therefore, it is easier to jump for instance a jump would take you much higher. Your body would also not need the robustness that it needs to deal with gravity here pushing down on your organs and so on, so might need to be less sturdy.
-How Did The Moon Form?::
 What is a black hole?::A black hole is a region of spacetime exhibiting gravitational acceleration so strong that nothing—no particles or even electromagnetic radiation such as light—can escape from it.
-
+Which star is at the center of our Solar System?::Sun.
+What is the diameter of Sun?::1,392,684 km (865,374 mi).
+What percent of the solar system’s mass does Sun holds?::99.8 percent.
+How many stars are in the Milky Way?::More than 100 billion.
+When was Sun born?::Roughly 4.6 billion years ago.
+What is the distance between sun and earth?::92,960,000 miles (149,600,000 km).
+Sun’s Chemical Composition?::71% of Hydrogen, 26.5% Helium and2.5% of other elements.
+How much time does sun rays take to reach earth?::8 minutes.
+Which planet is nearest to the earth?::MERCURY.
+Which planet is known as the Morning Star or the Evening Star?::VENUS.
+What is the diameter of MERCURY?::3,032 miles (4,879 km).
+What is the diameter of VENUS?::7,521 miles (12,104 km).
+What is the diameter of EARTH?::7,918 miles (12,742 km).
+What is the diameter of MARS?::4,212 miles (6,779 km)
+What is the diameter of JUPITER?::86,881 miles (139,822 km).
+What is the diameter of SATURN?::120 536 kilometers
+What is the diameter of URANUS?::31,518 miles (50,724 km).
+What is the diameter of NEPTUNE?::30,599 miles (49,244 km).
+What is the diameter of PLUTO?::2360 kilometers.
+Which is the largest planet in our solar system?::JUPITER.
+Which Planet Has the Most Moons?::The planet with the most number of moons is Jupiter with 66 moons.
+Which planet is closest to the sun?::name of the closest planet to the sun is : Mercury.
+Which Is the Hottest Planet in the solar system?::Venus.
+Which Planets Have Rings around Them?::Saturn,Jupiter, Uranus, and Neptune (4 planets).
+Which is the coldest andsmallest of all planets?::PLUTO.
+Which Star is called Earth’s satellite?::Moon.
+What is the Average distance of Moon from Earth?::238,855 miles (384,400 km).
+What is the age of Moon?::4.527 billion years.
+What is the Orbital period of Moon?::27 days.
+What is the Circumference of Moon?::6,784 miles (10,917 km).
+Which planet has the most volcanoes?::Venus.
+Which planets do not have moons?::Mercury and Venus.
+How much larger the Sun is than Earth?::300000 times.
+When the Halley’s Comet will be visible from Earth again?::2061.
+What is the surface temperature of Venus?::Over 450 degrees Celsius.
+When was the Solar System formed?::Around 4.6 billion years ago.
+A person who weighs 200 pounds on earth, what would he weigh on the surface of Mars?::76 pounds.
+Which Planet spins backwards relative to the others?::Venus.
+When was the first man made object sent into space?::1957.
+Name Jupiter’s 4 biggest moons:::Europa, Ganymede, Callisto and Io.
+Why do we have high & low tides?::Because of the Sun & Moons gravity.
+Where is The “edge of space” located?::100 km (62 mi) above sea level.
+What is an astronaut employed by the Russian Federal Space Agency called?::Kosmonavt.
+Who was the first person to reach space?::Yuri Gagarin, in 1961.
+Who was the first woman to reach space?::Valentina Tereshkova, in 1963.
+Name five recognized dwarf planets?::Pluto, Ceres, Eris, Makemake & Haumea.
+The Moon orbits the Earth every::27.3 days.
+Who was the first person to set foot on the Moon?::Neil Armstrong.
+What is the average surface temperature of the Moon?::107 degrees Celsius during the day and -153 degrees Celsius at night.
+When does a lunar eclipse occur?::When the Earth is between — the Sun and the Moon.
+At how mush speed Moon moves across the Sun?::2,250 km per hour.
+How long a solar eclipse can last?::7 and a half minutes.
+What is the Equatorial Circumference of Earth?::40,030 km.
+What is Earth’s surface temperature?::-88 to 58°C.
+When was the Earth formed?::approximately 4.54 billion years ago.
+How many natural satellites of Earth are there?::One, Moon.
+What are the notable satellites of Mars?::Phobos & Deimos.
+Which planet has approximately the same landmass as Earth?::Mars.
+What are the notable satellites of Pluto?::Charon, Nix, Hydra, Kerberos and Styx.
+When was the Pluto reclassified from a planet to a dwarf planet?::In 2006.
+How many stars are there in Andromeda Galaxy?::1 trillion.
+At which speed the Andromeda Galaxy is approaching the Milky Way?::At approximately hundred to hundred and forty kilometers per second.

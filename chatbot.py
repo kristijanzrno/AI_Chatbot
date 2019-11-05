@@ -107,7 +107,7 @@ def fetch_json(url):
     return None
 
 def find_geolocation_info(address, attribute):
-            geolocator = Nominatim(user_agent="ai_chatbot_ntu", timeout=None)
+            geolocator = Nominatim(user_agent="ai_chatbot_ntu", timeout=None, scheme='http')
             location = geolocator.geocode(address)
             if(location):
                 try:
