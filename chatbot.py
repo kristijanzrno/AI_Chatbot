@@ -13,8 +13,10 @@ from flask import Flask, render_template, request
 
 ipgelocation_api_key = '064b4149765b496eb89050790ff10c68'
 ipgeolocation_api_url = 'https://api.ipgeolocation.io/astronomy?apiKey='
+
 nasa_api_key = 'MvHhdCMNgq2VF1Tcu1UJYKemsPyFPnGE7U9dbXtn'
 nasa_api_url = 'https://api.nasa.gov/planetary/apod?api_key='
+
 astrobin_api_key = '6dd236d199c8b291509e52ffed9761d79ee305ec'
 astrobin_api_secret = '69077fef211155bbc60d98207dafa27830221bc0'
 astrobin_api_url = 'https://www.astrobin.com/api/v1/image/?title__icontains='
@@ -129,7 +131,6 @@ def fetch_pic_of_the_day():
 
 def find_astrophotography(search_term):
     url = astrobin_api_url + search_term + '&limit=1&api_key=' + astrobin_api_key + '&api_secret='+astrobin_api_secret+'&format=json'
-    print(url)
     json_response = fetch_json(url)
     try:
         if(json_response):

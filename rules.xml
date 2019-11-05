@@ -85,16 +85,16 @@
 
 
 <!--- NASA API -->
-<category><pattern> SHOW ME NASA PHOTO OF THE DAY </pattern>
+<category><pattern> SHOW ME NASA * OF THE DAY </pattern>
   <template>#1$1</template></category>
 
-<category><pattern> SHOW ME NASA PHOTO OF THE DAY DESCRIPTION </pattern>
+<category><pattern> SHOW ME NASA * OF THE DAY DESCRIPTION </pattern>
 <template>#1$0</template></category>
 
-<category><pattern> WHO IS THE NASA PHOTO OF THE DAY AUTHOR </pattern>
+<category><pattern> WHO IS THE NASA * OF THE DAY AUTHOR </pattern>
 <template>#1$2</template></category>
 
-
+<!--- Astrobin API, used for astrophotography search -->
 <category><pattern> SHOW ME AN IMAGE OF * </pattern>
   <template>#3$<star/></template></category>
 
