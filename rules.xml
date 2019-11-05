@@ -2,16 +2,24 @@
 
 <!-- Greetings and Politeness -->
 <category> <pattern> HELLO </pattern>
-  <template>Hello! How are you?</template> </category>
+  <template>
+  <random>
+  <li>Hi there!</li>
+  <li>Hello, how are you?</li>
+  <li>How's it going!</li>
+  <li>Hi, how can I help you?</li>
+  <li>Greetings</li>
+  </random>
+  </template> </category>
 
 <category> <pattern> HELLO * </pattern>
-  <template><srai>HELLO</srai></template> </category>
+  <template><srai>HELLO</srai></template></category>
 
 <category> <pattern> HI </pattern>
-  <template><srai>HELLO</srai></template> </category>
+  <template><srai>HELLO</srai></template></category>
 
 <category> <pattern> HI * </pattern>
-  <template><srai>HELLO</srai></template> </category>
+  <template><srai>HELLO</srai></template></category>
 
 <category> <pattern> HOW ARE YOU </pattern>
   <template>I'm functioning within normal parameters, thanks for asking.</template></category>
@@ -85,18 +93,39 @@
 
 
 <!--- NASA API -->
-<category><pattern> SHOW ME NASA * OF THE DAY </pattern>
+<category><pattern> NASA * OF THE DAY </pattern>
   <template>#1$1</template></category>
 
-<category><pattern> SHOW ME NASA * OF THE DAY DESCRIPTION </pattern>
+<category><pattern> SHOW ME NASA * OF THE DAY </pattern>
+  <template><srai>NASA <star/> OF THE DAY</srai></template></category>
+
+<category><pattern> * ME NASA * OF THE DAY </pattern>
+  <template><srai>NASA <star index="2"/> OF THE DAY</srai></template></category>
+
+<category><pattern> NASA * OF THE DAY DESCRIPTION </pattern>
 <template>#1$0</template></category>
+
+<category><pattern> * ME NASA * OF THE DAY DESCRIPTION </pattern>
+  <template><srai>NASA <star/> OF THE DAY DESCRIPTION</srai></template></category>
 
 <category><pattern> WHO IS THE NASA * OF THE DAY AUTHOR </pattern>
 <template>#1$2</template></category>
 
+<category><pattern> NASA * OF THE DAY AUTHOR </pattern>
+  <template><srai>WHO IS THE NASA <star/> OF THE DAY AUTHOR</srai></template></category>
+
 <!--- Astrobin API, used for astrophotography search -->
 <category><pattern> SHOW ME AN IMAGE OF * </pattern>
   <template>#3$<star/></template></category>
+
+  <category><pattern> FIND AN IMAGE OF * </pattern>
+  <template><srai>SHOW ME AN IMAGE OF <star/>< /srai></template></category>
+
+  <category><pattern> SHOW AN IMAGE OF * </pattern>
+  <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
+
+  <category><pattern> DISPLAY AN IMAGE OF * </pattern>
+  <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
 
 <!-- Default reaction -->
 <category><pattern> * </pattern>

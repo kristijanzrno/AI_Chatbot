@@ -21,7 +21,7 @@ astrobin_api_key = '6dd236d199c8b291509e52ffed9761d79ee305ec'
 astrobin_api_secret = '69077fef211155bbc60d98207dafa27830221bc0'
 astrobin_api_url = 'https://www.astrobin.com/api/v1/image/?title__icontains='
 
-error_msg = 'Sorry, I could not find the answer... Please try again.'
+error_msg = 'Sorry, I did not get that... Please try again.'
 
 app = Flask(__name__)
 
