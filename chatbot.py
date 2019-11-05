@@ -112,7 +112,9 @@ def check_similarity(user_input):
 
 # User query processing function
 def process_query(user_input):
-    # This was left here for any future pre-processing
+    # Preprocessing the user input to remove punctuation
+    user_input.translate(str.maketrans('', '', string.punctuation))
+    
     response_agent = 'aiml'
     if response_agent == 'aiml':
         answer = kernel.respond(user_input)
