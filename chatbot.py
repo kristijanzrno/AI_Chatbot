@@ -17,8 +17,8 @@ ipgeolocation_api_url = 'https://api.ipgeolocation.io/astronomy?apiKey='
 nasa_api_key = 'MvHhdCMNgq2VF1Tcu1UJYKemsPyFPnGE7U9dbXtn'
 nasa_api_url = 'https://api.nasa.gov/planetary/apod?api_key='
 
-astrobin_api_key = '6dd236d199c8b291509e52ffed9761d79ee305ec'
-astrobin_api_secret = '69077fef211155bbc60d98207dafa27830221bc0'
+astrobin_api_key = '504261c21dd060d57ba869d7e46d742f5dceed27'
+astrobin_api_secret = '921adc5c7dda876ae7ec0173a5a346273b70e866'
 astrobin_api_url = 'https://www.astrobin.com/api/v1/image/?title__icontains='
 
 error_msg = 'Sorry, I did not get that... Please try again.'
@@ -31,7 +31,6 @@ answers = []
 kernel = aiml.Kernel()
 kernel.setTextEncoding(None)
 kernel.bootstrap(learnFiles='rules.xml')
-
 
 @app.route('/')
 def home():
@@ -51,14 +50,11 @@ remove_punct_dict = dict((ord(punct), None) for punct in string.punctuation)
 def lem_tokenizer(text):
     return lem_tokens(nltk.word_tokenize(text.lower().translate(remove_punct_dict)))
 
-
 def load_data():
     data = open('data.txt', 'r')
     for line in data:
         questions.append(line.split('::')[0].lower())
         answers.append(line.split('::')[1])
-
-load_data()
 
 def check_similarity(user_input):
     questions.append(user_input)
@@ -70,7 +66,7 @@ def check_similarity(user_input):
     flat.sort()
     req_tfidf = flat[-2]
     if req_tfidf < 0.8:
-        response = error_msg;
+        response = error_msg
     else:
         response = answers[idx]
     questions.pop()
@@ -85,6 +81,7 @@ def process_query(user_input):
         params = answer[1:].split('$')
         cmd = int(params[0])
         if cmd == 0:
+            
             return params[1]
         elif cmd == 1:
             return fetch_pic_of_the_day()[int(params[1])]
@@ -93,7 +90,6 @@ def process_query(user_input):
         elif cmd == 3:
             return find_astrophotography(params[1])
         elif cmd == 99:
-            #similarity component
             return check_similarity(user_input)
     else:
         return answer
@@ -106,6 +102,14 @@ def fetch_json(url):
             return json_response
     return None
 
+def extract_single_json_object(json_data, json_object_name, return_error):
+    try:
+        return json_data[json_object_name]
+    except:
+        if return_error:
+            return error_msg
+    return None
+
 def find_geolocation_info(address, attribute):
             geolocator = Nominatim(user_agent="ai_chatbot_ntu", timeout=None, scheme='http')
             location = geolocator.geocode(address)
@@ -114,20 +118,24 @@ def find_geolocation_info(address, attribute):
                     url = ipgeolocation_api_url + ipgelocation_api_key + "&lat="+str(location.latitude) +"&long="+str(location.longitude)
                     json_response = fetch_json(url)
                     if(json_response):
-                        data = json_response[attribute]
-                        return('The ' + attribute + ' at ' + address + ' is at ' + data)
+                        data = extract_single_json_object(json_response, attribute, False)
+                        if(data):
+                            return('The ' + attribute + ' at ' + address + ' is at ' + data)
+                        return error_msg
                 except:
                     return error_msg
-            return error_msg
 
 def fetch_pic_of_the_day():
     url = nasa_api_url+nasa_api_key
     json_response = fetch_json(url)
-    try:
-        if(json_response):
-            return [json_response['explanation'],'img='+json_response['hdurl'], json_response['copyright']]
-    except:
-        return error_msg
+    result = [error_msg, error_msg, error_msg]
+    if(json_response):
+        result[0] = extract_single_json_object(json_response, 'explanation', True)
+        img = extract_single_json_object(json_response, 'hdurl', True)
+        if img != error_msg:
+            result[1] = 'img='+img
+        result[2] = extract_single_json_object(json_response, 'copyright', True)
+    return result
 
 def find_astrophotography(search_term):
     url = astrobin_api_url + search_term + '&limit=1&api_key=' + astrobin_api_key + '&api_secret='+astrobin_api_secret+'&format=json'
@@ -138,8 +146,7 @@ def find_astrophotography(search_term):
             return('img='+image)
     except:
         return error_msg
-    return error_msg
-
 
 if __name__ == '__main__':
+    load_data()
     app.run()
