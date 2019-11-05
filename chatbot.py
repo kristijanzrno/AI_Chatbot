@@ -81,7 +81,6 @@ def process_query(user_input):
         params = answer[1:].split('$')
         cmd = int(params[0])
         if cmd == 0:
-            
             return params[1]
         elif cmd == 1:
             return fetch_pic_of_the_day()[int(params[1])]

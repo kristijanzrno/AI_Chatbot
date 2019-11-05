@@ -121,41 +121,75 @@
 <category><pattern> * ME NASA * OF THE DAY </pattern>
   <template><srai>NASA PHOTO OF THE DAY</srai></template></category>
 
+<category><pattern> WHAT IS NASA * OF THE DAY </pattern>
+  <template><srai>NASA PHOTO OF THE DAY</srai></template></category>
+
 <category><pattern> NASA * OF THE DAY DESCRIPTION </pattern>
 <template>#1$0</template></category>
 
 <category><pattern> * ME NASA * OF THE DAY DESCRIPTION </pattern>
-  <template><srai>NASA <star/> OF THE DAY DESCRIPTION</srai></template></category>
+  <template><srai>NASA PHOTO OF THE DAY DESCRIPTION</srai></template></category>
+
+<category><pattern> * NASA * OF THE DAY DESCRIPTION </pattern>
+  <template><srai>NASA PHOTO OF THE DAY DESCRIPTION</srai></template></category>
+
+<category><pattern> WHAT IS NASA * OF THE DAY DESCRIPTION </pattern>
+  <template><srai>NASA PHOTO OF THE DAY DESCRIPTION</srai></template></category>
 
 <category><pattern> WHO IS THE NASA * OF THE DAY AUTHOR </pattern>
 <template>#1$2</template></category>
+
+<category><pattern> WHO IS NASA * OF THE DAY AUTHOR </pattern>
+  <template><srai>WHO IS THE NASA <star/> OF THE DAY AUTHOR</srai></template></category>
 
 <category><pattern> NASA * OF THE DAY AUTHOR </pattern>
   <template><srai>WHO IS THE NASA <star/> OF THE DAY AUTHOR</srai></template></category>
 
 <!--- Astrobin API, used for astrophotography search -->
-<category><pattern> SHOW ME * IMAGE OF * </pattern>
-  <template>#3$<star index="2"/></template></category>
+<!--- Considered using " SHOW AN * OF * " here, but decided not to
+      because, unlike in the NASA PHOTO OF THE DAY SECTION, this query is less straightforward
+      and could end up meaning lots of different things 
+      (e.g. to avoid " find a radius of the sun " showing an image instead of the radius) -->
 
-  <category><pattern> FIND AN IMAGE OF * </pattern>
-  <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
+<category><pattern> SHOW ME AN IMAGE OF * </pattern>
+  <template>#3$<star/></template></category>
 
   <category><pattern> SHOW AN IMAGE OF * </pattern>
   <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
 
-   <category><pattern> DISPLAY AN IMAGE OF * </pattern>
-  <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
-
-   <category><pattern> FIND A PHOTO OF * </pattern>
+  <category><pattern> SHOW ME A PHOTO OF * </pattern>
   <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
 
   <category><pattern> SHOW A PHOTO OF * </pattern>
   <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
 
- <category><pattern> DISPLAY A PHOTO OF * </pattern>
+  <category><pattern> FIND ME AN IMAGE OF * </pattern>
   <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
 
- 
+  <category><pattern> FIND AN IMAGE OF * </pattern>
+  <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
+
+  <category><pattern> FIND ME A PHOTO OF * </pattern>
+  <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
+
+   <category><pattern> FIND A PHOTO OF * </pattern>
+  <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
+
+    <category><pattern> DISPLAY ME AN IMAGE OF * </pattern>
+  <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
+
+  <category><pattern> DISPLAY AN IMAGE OF * </pattern>
+  <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
+
+  <category><pattern> DISPLAY ME A PHOTO OF * </pattern>
+  <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
+
+   <category><pattern> DISPLAY A PHOTO OF * </pattern>
+  <template><srai>SHOW ME AN IMAGE OF <star/></srai></template></category>
+
+ <category><pattern> * DOES * LOOK LIKE </pattern>
+  <template><srai>SHOW ME AN IMAGE OF <star index = "2"/></srai></template></category>
+
 <!-- Default reaction -->
 <category><pattern> * </pattern>
   <template>#99$<star index="1"/></template></category>
