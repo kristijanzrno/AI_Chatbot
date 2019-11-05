@@ -170,24 +170,26 @@ def extract_single_json_object(json_data, json_object_name, return_error):
 # user specified location
 def find_geolocation_info(address, attribute):
             # Using geopy.geolocator Nominatim to convert user query address into latitude and longitude
-            geolocator = Nominatim(user_agent="ai_chatbot_ntu", timeout=None, scheme='http')
-            location = geolocator.geocode(address)
-            if(location):
-                try:
-                    # Constructing an ipgeolocator request url using the above found latitude and longitude values, along with api_key
-                    url = ipgeolocation_api_url + ipgelocation_api_key + "&lat="+str(location.latitude) +"&long="+str(location.longitude)
-                    json_response = fetch_json(url)
-                    if(json_response):
-                        # Extracting the data based on the attribute (extracted from the user query, e.g. when is the SUNSET at Nottingham)
-                        # user had wanted (moonrise, moonset, sunrise sunset)
-                        data = extract_single_json_object(json_response, attribute, False)
-                        if(data):
-                            # If the json object has been successfully extracted, return the result to chatbot UI
-                            return('The ' + attribute + ' at ' + address + ' is at ' + data)
+            try:
+                geolocator = Nominatim(user_agent="ai_chatbot_astronomy", timeout=None)
+                location = geolocator.geocode(address)
+                if(location):
+                    try:
+                        # Constructing an ipgeolocator request url using the above found latitude and longitude values, along with api_key
+                        url = ipgeolocation_api_url + ipgelocation_api_key + "&lat="+str(location.latitude) +"&long="+str(location.longitude)
+                        json_response = fetch_json(url)
+                        if(json_response):
+                            # Extracting the data based on the attribute (extracted from the user query, e.g. when is the SUNSET at Nottingham)
+                            # user had wanted (moonrise, moonset, sunrise sunset)
+                            data = extract_single_json_object(json_response, attribute, False)
+                            if(data):
+                                # If the json object has been successfully extracted, return the result to chatbot UI
+                                return('The ' + attribute + ' at ' + address + ' is at ' + data)
+                            return error_msg
+                    except:
                         return error_msg
-                except:
-                    return error_msg
-
+            except:
+                return error_msg
 # Function created for NASA picture of the day information retreival
 def fetch_pic_of_the_day():
     # Constructing url with the specified API key
