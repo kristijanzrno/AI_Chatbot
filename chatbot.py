@@ -2,6 +2,7 @@ import aiml
 import nltk
 import string
 import json, requests
+from random import randrange
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -162,38 +163,60 @@ def extract_single_json_object(json_data, json_object_name, return_error):
 # Function created to find sunset, sunrise, moonset, moonrise data for a
 # user specified location
 def find_geolocation_info(address, attribute):
+            # Using geopy.geolocator Nominatim to convert user query address into latitude and longitude
             geolocator = Nominatim(user_agent="ai_chatbot_ntu", timeout=None, scheme='http')
             location = geolocator.geocode(address)
             if(location):
                 try:
+                    # Constructing an ipgeolocator request url using the above found latitude and longitude values, along with api_key
                     url = ipgeolocation_api_url + ipgelocation_api_key + "&lat="+str(location.latitude) +"&long="+str(location.longitude)
                     json_response = fetch_json(url)
                     if(json_response):
+                        # Extracting the data based on the attribute (extracted from the user query, e.g. when is the SUNSET at Nottingham)
+                        # user had wanted (moonrise, moonset, sunrise sunset)
                         data = extract_single_json_object(json_response, attribute, False)
                         if(data):
+                            # If the json object has been successfully extracted, return the result to chatbot UI
                             return('The ' + attribute + ' at ' + address + ' is at ' + data)
                         return error_msg
                 except:
                     return error_msg
 
+# Function created for NASA picture of the day information retreival
 def fetch_pic_of_the_day():
+    # Constructing url with the specified API key
     url = nasa_api_url+nasa_api_key
     json_response = fetch_json(url)
+    # Function returns information formatted as a list of [description, image_url, author]
+    # Sometimes some of these information are unavailable on the API (e.g. author)
+    # so we are setting error messages as default outputs
     result = [error_msg, error_msg, error_msg]
     if(json_response):
+        # Use created extract json object function in order to extract explanation (description),
+        # hdurl (image link), and copyright (author) and add them into return array
         result[0] = extract_single_json_object(json_response, 'explanation', True)
         img = extract_single_json_object(json_response, 'hdurl', True)
         if img != error_msg:
+            # Images are returned to the web ui as img=img_url, so when it sees that the 
+            # returned answer starts with 'img=', it knows it should load an image in the chat box
             result[1] = 'img='+img
         result[2] = extract_single_json_object(json_response, 'copyright', True)
     return result
 
+# Function created to fetch astronomy objects photos (e.g. nebulas, galaxies, planets...)
 def find_astrophotography(search_term):
-    url = astrobin_api_url + search_term + '&limit=1&api_key=' + astrobin_api_key + '&api_secret='+astrobin_api_secret+'&format=json'
+    # Constructing url of a specified API key, and a search term extracted from the user query
+    # Limited the query to 10 objects
+    url = astrobin_api_url + search_term + '&limit=10&api_key=' + astrobin_api_key + '&api_secret='+astrobin_api_secret+'&format=json'
     json_response = fetch_json(url)
     try:
         if(json_response):
-            image = json_response['objects'][0]['url_hd']
+            # Fetch the image object from the result json query and return it as img=img_url (just like in the NASA example)
+            # The image is randomised between the fetched (max 10) objects to not show the same image
+            # for the same query all the time
+            image_objects = json_response['objects']
+            rand_image = randrange(len(image_objects)-1)
+            image = image_objects[rand_image]['url_hd']
             return('img='+image)
     except:
         return error_msg
