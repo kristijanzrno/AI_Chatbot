@@ -95,7 +95,7 @@
           },
         });
         var im = URL.createObjectURL(this.files[0])
-        botMessage = '<div class="chat bot"><div class="user-photo"><img src="../static/robot.png"></div><p class="chat-photo"> <img src="' + im +  '"></p>';
+        botMessage = '<div class="chat self"><div class="user-photo"><img src="../static/user.png"></div><p class="chat-photo"> <img src="' + im +  '"></p>';
         $("#chatlogs").append(botMessage);
       });
 

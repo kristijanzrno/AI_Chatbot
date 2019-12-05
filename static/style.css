@@ -97,6 +97,19 @@ body {
   order: -1;
 }
 
+.self .chat-photo {
+  width: 70%;
+  padding: 15px;
+  margin: 5px 10px 0;
+  background: #FDE69E;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 18px;
+  overflow: hidden;
+  align-items: center;
+  order: -1;
+}
+
 .chat-form {
   margin-top: 20px;
   display: flex;
