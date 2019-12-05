@@ -31,10 +31,10 @@
           rows="1"
           placeholder="Ask something..."
         ></textarea>
-        <form name="uploadForm" method="POST" action="/upload" enctype="multipart/form-data">
-        <input type="file" name='photo' id="imgUpload" style="display:none" accept="image/png, image/jpeg"/> 
+        <form name="uploadForm" method="POST"enctype="multipart/form-data">
+        <input type="file" name='file' id="imgUpload" style="display:none" accept="image/png, image/jpeg"/> 
+        <img id="imageInput" type="button" src="../static/upload_icon.png" width="62" height="62"/>
       </form>
-      <img id="imageInput" type="submit" src="../static/upload_icon.png" width="62" height="62"/>
         <button id="buttonInput" type="submit">Send</button>
       </div>
     </div>
@@ -79,9 +79,26 @@
       $("#imageInput").click(function(){
         $('#imgUpload').trigger('click');
       });
+      
       $("#imgUpload").change(function(){
-        document.uploadForm.submit();
+        var formData = new FormData();
+        formData.append('file', this.files[0]);
+        $.ajax({
+          type: 'POST',
+          url: '/upload',
+          data: formData,
+          contentType: false,
+          cache: false,
+          processData: false,
+          success: function(data){
+            console.log('Success');
+          },
+        });
+        var im = URL.createObjectURL(this.files[0])
+        botMessage = '<div class="chat bot"><div class="user-photo"><img src="../static/robot.png"></div><p class="chat-photo"> <img src="' + im +  '"></p>';
+        $("#chatlogs").append(botMessage);
       });
+
     </script>
   </body>
 </html>

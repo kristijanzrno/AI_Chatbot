@@ -59,11 +59,10 @@ def get_bot_response():
 
 @app.route('/upload', methods = ['POST'])
 def upload_file():
-    if request.method == 'POST' and 'photo' in request.files:
-        photo = request.files['photo']
+    if 'file' in request.files:
+        photo = request.files['file']
         photo.save('uploaded/'+photo.filename)
-        return 'hi'
-    return 'processing...'
+        to_process = photo.filename
 
 # Using nltk lemmatizer to normalise inputs
 # Normalising will be done on questions list once we want to compare the user input with the questions
