@@ -57,15 +57,12 @@ def get_bot_response():
     return str(process_query(text_input))
 
 
-@app.route('/upload')
+@app.route('/upload', methods = ['POST'])
 def upload_file():
-    if 'file' not in request.files:
-        return 'Could not read file'
-    file = request.files['inputFile']
-    if file.filename == '':
-        return 'Could not read file'
-    filename = secure_filename(file.filename)
-    file.save('/uploaded/' + filename)
+    if request.method == 'POST' and 'photo' in request.files:
+        photo = request.files['photo']
+        photo.save('uploaded/'+photo.filename)
+        return 'hi'
     return 'processing...'
 
 # Using nltk lemmatizer to normalise inputs

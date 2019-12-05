@@ -31,10 +31,10 @@
           rows="1"
           placeholder="Ask something..."
         ></textarea>
-        <form method="POST" action="/upload" enctype="multipart/form-data">
-        <input type="file" id="imgUpload" style="display:none" accept="image/png, image/jpeg"/> 
+        <form name="uploadForm" method="POST" action="/upload" enctype="multipart/form-data">
+        <input type="file" name='photo' id="imgUpload" style="display:none" accept="image/png, image/jpeg"/> 
       </form>
-        <img id="imageInput" type="submit" src="../static/upload_icon.png" width="62" height="62"/>
+      <img id="imageInput" type="submit" src="../static/upload_icon.png" width="62" height="62"/>
         <button id="buttonInput" type="submit">Send</button>
       </div>
     </div>
@@ -80,7 +80,7 @@
         $('#imgUpload').trigger('click');
       });
       $("#imgUpload").change(function(){
-        console.log(this.files[0].mozzFullPath)
+        document.uploadForm.submit();
       });
     </script>
   </body>

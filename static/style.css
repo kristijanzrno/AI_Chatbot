@@ -129,6 +129,9 @@ body {
 }
 
 .chat-form img {
+  display: block;
+  height: 64;
+  width: 64;
   border: none;
   border-radius: 5%;
   margin: 0 5px;
