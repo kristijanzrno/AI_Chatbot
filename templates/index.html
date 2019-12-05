@@ -95,8 +95,20 @@
           },
         });
         var im = URL.createObjectURL(this.files[0])
-        botMessage = '<div class="chat self"><div class="user-photo"><img src="../static/user.png"></div><p class="chat-photo"> <img src="' + im +  '"></p>';
+        var chatlog = document.getElementById("chatlogs");
+        userMessage = '<div class="chat self"><div class="user-photo"><img src="../static/user.png"></div><p class="chat-photo"> <img src="' + im +  '"></p>';
+        botMessage = '<div class="chat bot"><div class="user-photo"><img src="../static/robot.png"></div><p class="chat-message">' + 'Performing classification...' + '</p>';
+        $("#chatlogs").append(userMessage);
         $("#chatlogs").append(botMessage);
+        chatlog.scrollTop = chatlog.scrollHeight;
+        $.get("/get", { msg: '__csf__' }).done(function(data) {
+          botMessage =
+            '<div class="chat bot"><div class="user-photo"><img src="../static/robot.png"></div><p class="chat-message">' +
+            data +
+            '</p>';
+            $("#chatlogs").append(botMessage);
+            chatlog.scrollTop = chatlog.scrollHeight;
+        });
       });
 
     </script>

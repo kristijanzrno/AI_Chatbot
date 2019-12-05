@@ -123,6 +123,11 @@ def process_query(user_input):
     # Preprocessing the user input to remove punctuation
     user_input.translate(str.maketrans('', '', string.punctuation))
 
+    # Check if an image has been uploaded for classification
+    if(user_input == '__csf__'):
+        # If yes, classify the last uploaded image and return the classified object name
+        return classify();
+
     response_agent = 'aiml'
     if response_agent == 'aiml':
         answer = kernel.respond(user_input)
@@ -236,6 +241,9 @@ def find_astrophotography(search_term):
             return('img='+image)
     except:
         return error_msg
+
+def classify():
+    return 'recognised model'
 
 if __name__ == '__main__':
     # Load the data from the text file and start the flask website
