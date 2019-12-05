@@ -24,7 +24,7 @@ ipgeolocation_api_url = 'https://api.ipgeolocation.io/astronomy?apiKey='
 nasa_api_key = 'MvHhdCMNgq2VF1Tcu1UJYKemsPyFPnGE7U9dbXtn'
 nasa_api_url = 'https://api.nasa.gov/planetary/apod?api_key='
 
-# ASTROBIN API used to fetch online astrophotography photos nad their info
+# ASTROBIN API used to fetch online astrophotography photos and their info
 astrobin_api_key = '504261c21dd060d57ba869d7e46d742f5dceed27'
 astrobin_api_secret = '921adc5c7dda876ae7ec0173a5a346273b70e866'
 astrobin_api_url = 'https://www.astrobin.com/api/v1/image/?title__icontains='
