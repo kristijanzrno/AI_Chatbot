@@ -1,4 +1,3 @@
-
 import aiml
 import nltk
 import string
@@ -9,6 +8,7 @@ from geopy.exc import GeocoderTimedOut
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from flask import Flask, render_template, request
+from werkzeug.utils import secure_filename
 
 # Important Note; The console will output the link where the Chatbot can be accessed in (Usually: http://127.0.0.1:5000/)
 # Please enter that link to interact with the chatbot 
@@ -55,6 +55,18 @@ def home():
 def get_bot_response():
     text_input = request.args.get('msg').lower()
     return str(process_query(text_input))
+
+
+@app.route('/upload')
+def upload_file():
+    if 'file' not in request.files:
+        return 'Could not read file'
+    file = request.files['inputFile']
+    if file.filename == '':
+        return 'Could not read file'
+    filename = secure_filename(file.filename)
+    file.save('/uploaded/' + filename)
+    return 'processing...'
 
 # Using nltk lemmatizer to normalise inputs
 # Normalising will be done on questions list once we want to compare the user input with the questions

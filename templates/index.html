@@ -31,7 +31,9 @@
           rows="1"
           placeholder="Ask something..."
         ></textarea>
+        <form method="POST" action="/upload" enctype="multipart/form-data">
         <input type="file" id="imgUpload" style="display:none" accept="image/png, image/jpeg"/> 
+      </form>
         <img id="imageInput" type="submit" src="../static/upload_icon.png" width="62" height="62"/>
         <button id="buttonInput" type="submit">Send</button>
       </div>
