@@ -1,5 +1,6 @@
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D, MaxPool2D, Flatten, Lambda, Reshape, Dropout, ZeroPadding2D
+from keras.layers.convolutional import Max
 from keras.optimizers import RMSprop
 import numpy as np 
 import matplotlib.pyplot as pyplot
