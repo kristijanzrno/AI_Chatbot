@@ -128,6 +128,17 @@ body {
   background: rgba(0, 0, 0, 0.1);
 }
 
+.chat-form img {
+  border: none;
+  border-radius: 5%;
+  margin: 0 5px;
+  box-shadow: 0 3px 0 #af9cb1;
+  cursor: pointer;
+  -webkit-transition: background 0.2s ease;
+  -moz-transition: background 0.2s ease;
+  -o-transition: background 0.2s ease;
+}
+
 .chat-form button {
   background: #CAB4CC;
   padding: 5px 15px;
@@ -135,8 +146,8 @@ body {
   color: #fff;
   border: none;
   border-radius: 5%;
-  margin: 0 10px;
-  box-shadow: 0 3px 0 rgb(175, 156, 177);
+  margin: 0 5px;
+  box-shadow: 0 3px 0 #af9cb1;
   cursor: pointer;
   -webkit-transition: background 0.2s ease;
   -moz-transition: background 0.2s ease;
@@ -144,5 +155,9 @@ body {
 }
 
 .chat-form button:hover {
-  background: #e0ccbf;
+  opacity: 0.8;
+}
+
+.chat-form img:hover{
+  opacity: 0.8;
 }
