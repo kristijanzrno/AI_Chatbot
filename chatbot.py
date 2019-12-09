@@ -5,7 +5,6 @@ import string
 import json, requests
 from random import randrange
 from geopy.geocoders import Nominatim
-from geopy.exc import GeocoderTimedOut
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from flask import Flask, render_template, request
@@ -15,8 +14,6 @@ from PIL import Image
 from skimage import transform
 import numpy as np
 from keras.preprocessing.image import ImageDataGenerator
-
-
 
 # Important Note; The console will output the link where the Chatbot can be accessed in (Usually: http://127.0.0.1:5000/)
 # Please enter that link to interact with the chatbot 
@@ -68,18 +65,16 @@ classification_questions=[
     'Does the galaxy have a buldge at its centre? If so, what shape?',
     'How tightly wound do the spiral arms appear?',
     'How many spiral arms are there?']
-
 #Defining 37 answers (classes)
 classification_answers=['Smooth', 'Features or disk', 'Star of artifact', 'Yes', 'No', 'Yes', 'No', 'Yes', 'No', 
     'No bulge', 'Just noticable', 'Obvious', 'Dominant', 'Yes', 'No', 'Completely round', 'In between', 'Cigar-shaped',
     'Ring', 'Lens or arc', 'Disturbed', 'Irregular', 'Other', 'Merger', 'Dust lane', 'Rounded', 'Boxy', 'No bulge', 'Tight',
     'Medium', 'Loose', 'One', 'Two', 'Three', 'Four', 'More than four', 'Can not tell']
-
-# Question answer range in the predicted csv file (e.g. first question has three answers, therefore 
+# Question - answers range (e.g. first question has three answers, therefore 
 # question at index 0 (1st question) has answers in range of [0,3] in the final predicted result)
 classification_answer_ranges = [[0,3], [3,5], [5,7], [7,9], [9,13], [13,15], [15,18], [18,25], [25,28], [28,31], [31,37]]
 # Format: AnswerNo [index] = NextQuestionNo
-# Question -1 marks the stop point
+# NextQuestionNo = -1 marks the stop point
 next_question = [7, 2, -1, 9, 3, 4, 4, 10, 5, 6, 6, 6, 6, 8, -1, 6, 6, 6, -1, -1, -1, -1, -1, -1, -1, 6, 6, 6, 11, 11, 11, 5, 5, 5, 5, 5, 5]
 
 # Flask route that handles the initial '/' request that loads the index webpage
@@ -94,13 +89,16 @@ def get_bot_response():
     text_input = request.args.get('msg').lower()
     return str(process_query(text_input))
 
-
+# Flask route which handles the image upload for the image classification
+# Photos are uploaded with an asynchronous AJAX POST request to avoid page redirect
 @app.route('/upload', methods = ['POST'])
 def upload_file():
+    # Checking if the file is in the post request
     if 'file' in request.files:
+        # If yes, save it within the uploaded/data/ folder
         photo = request.files['file']
         photo.save('uploaded/data/'+photo.filename)
-
+        # Right after this function ends, the classification function will be called
 
 # Using nltk lemmatizer to normalise inputs
 # Normalising will be done on questions list once we want to compare the user input with the questions
@@ -160,12 +158,11 @@ def check_similarity(user_input):
 def process_query(user_input):
     # Preprocessing the user input to remove punctuation
     user_input.translate(str.maketrans('', '', string.punctuation))
-
     # Check if an image has been uploaded for classification
     if(user_input == '__csf__'):
         # If yes, classify the last uploaded image and return the classified object name
         return classify();
-
+    # else, continue with the regular chat handling
     response_agent = 'aiml'
     if response_agent == 'aiml':
         answer = kernel.respond(user_input)
@@ -280,8 +277,14 @@ def find_astrophotography(search_term):
     except:
         return error_msg
 
+# Function created to perform image classification service
 def classify():
+    # Although the ImageDataGenerator is not required here, because each time one image will be provided,
+    # it is still being used for easy image pre-processing
+    # Defining the data generator
     test_data_generator = ImageDataGenerator(rescale=1. / 255)
+    # Defining the batch generator, with color mode set to RGB (same as the images for training),
+    # and resizing them to target size 224x224, no need to shuffle because we are taking only 1 image
     test_batch_generator = test_data_generator.flow_from_directory(
         "./uploaded/",
         class_mode=None,
@@ -289,25 +292,41 @@ def classify():
         batch_size=1,
         target_size=(224, 224),
         shuffle=False)
-        
     test_batch_generator.reset()
-    predictions = model.predict_generator(test_batch_generator,
-    steps=test_batch_generator.n/test_batch_generator.batch_size)
-
+    # Classifying the given photo here
+    predictions = model.predict_generator(test_batch_generator, steps=1)
+    # Classified photo will result with an np array floating point numbers from 0 to 1 for 37 classes 
+    # Putting those values in a float array so they are easier to process
     data = []
     for x in predictions[0]:
         data.append(float(x))
+    # Remove the given picture after the classification, this can be modified and removed if someone wants to keep
+    # the uploaded photos
     os.remove('./uploaded/' + test_batch_generator.filenames[0])
-
+    # Processing the classification data, starting from the first question
     return(classification_answer(data, '', 0))
 
+# Function created to process the actual classification prediction
+# This function will resemble the functionality required by the GalaxyZoo challenge
+# There are 11 questions with 37 answers (classes) in total
+# The order of question that needs to be asked is specified in the next_question array
+# For e.g., if a spiral is detected, then the next question will be how many arms are there
+# Another example is, if an star or artifact is detected, dont ask any more questions
 def classification_answer(data, response, question_number):
+    # Checking which of the 37 answers are the answers for this specific question
     answers_range = classification_answer_ranges[question_number]
+    # Cutting those answers from the rest of the list, so we can get the final answer to the question
     q_answers = data[answers_range[0]:answers_range[1]]
+    # The final answer is the answer with the highest score of the answers for this question
     final_answer = max(q_answers)
+    # Getting the index of this specific answer in the total array of 37 answers
     answer_index = answers_range[0] + q_answers.index(final_answer)
+    # Finding out which is the next question to ask, and if there is one, do a recursive call to this function
+    # and get the response for that question aswell
     if next_question[answer_index] != -1:
         response = classification_answer(data, response, next_question[answer_index]-1)
+    # Setting the response to the response to this question + the response of all the previous questions asked
+    # by the recursive calls
     response = classification_questions[question_number] + '<br> - ' + classification_answers[answer_index] + '<br>' + response 
     return response
 
@@ -316,5 +335,6 @@ if __name__ == '__main__':
     # Note, the console will output the link where the Chatbot can be accessed in (Usually: http://127.0.0.1:5000/)
     # Please enter that link to interact with the chatbot 
     load_data()
+    # Loading the trained model based on the vgg-16 architecture
     model = load_model('trained_model.h5')
     app.run()
