@@ -9,6 +9,13 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
+from keras.models import load_model
+from PIL import Image
+from skimage import transform
+import numpy as np
+from keras.preprocessing.image import ImageDataGenerator
+
+
 
 # Important Note; The console will output the link where the Chatbot can be accessed in (Usually: http://127.0.0.1:5000/)
 # Please enter that link to interact with the chatbot 
@@ -39,10 +46,40 @@ app = Flask(__name__)
 # meaning that the answer for e.g. question[3] will be in the answer list at the same index
 questions = []
 answers = []
+
 # Initializing aiml kernel
 kernel = aiml.Kernel()
 kernel.setTextEncoding(None)
 kernel.bootstrap(learnFiles='rules.xml')
+
+# Image Clasiffication Question order resembling the GalaxyZoo flowchart
+# There are 11 questions and 37 answers in total (37 classes)
+# Defining 11 Questions
+classification_questions=[
+    'Is the galaxy simply smooth and rounded, with no sign of a disk?',
+    'Could this be a disk viewed edge-on?',
+    'Is there a sign of a bar feature through the centre of the galaxy?',
+    'Is there any sign of a spiral arm pattern?',
+    'How prominent is the central bulge, compared with the rest of the galaxy?',
+    'Is there anything odd?',
+    'How rounded is it?',
+    'Is the odd feature a ring, or is the galaxy disturbed or irregular?',
+    'Does the galaxy have a buldge at its centre? If so, what shape?',
+    'How tightly wound do the spiral arms appear?',
+    'How many spiral arms are there?']
+
+#Defining 37 answers (classes)
+classification_answers=['Smooth', 'Features or disk', 'Star of artifact', 'Yes', 'No', 'Yes', 'No', 'Yes', 'No', 
+    'No bulge', 'Just noticable', 'Obvious', 'Dominant', 'Yes', 'No', 'Completely round', 'In between', 'Cigar-shaped',
+    'Ring', 'Lens or arc', 'Disturbed', 'Irregular', 'Other', 'Merger', 'Dust lane', 'Rounded', 'Boxy', 'No bulge', 'Tight',
+    'Medium', 'Loose', 'One', 'Two', 'Three', 'Four', 'More than four', 'Can not tell']
+
+# Question answer range in the predicted csv file (e.g. first question has three answers, therefore 
+# question at index 0 (1st question) has answers in range of [0,3] in the final predicted result)
+classification_answer_ranges = [[0,3], [3,5], [5,7], [7,9], [9,13], [13,15], [15,18], [18,25], [25,28], [28,31], [31,37]]
+# Format: AnswerNo [index] = NextQuestionNo
+# Question -1 marks the stop point
+next_question = [7, 2, -1, 9, 3, 4, 4, 10, 5, 6, 6, 6, 6, 8, -1, 6, 6, 6, -1, -1, -1, -1, -1, -1, -1, 6, 6, 6, 11, 11, 11, 5, 5, 5, 5, 5, 5]
 
 # Flask route that handles the initial '/' request that loads the index webpage
 @app.route('/')
@@ -62,7 +99,8 @@ def upload_file():
     if 'file' in request.files:
         photo = request.files['file']
         photo.save('uploaded/'+photo.filename)
-        to_process = photo.filename
+        to_classify = photo.filename
+        print(to_classify)
 
 # Using nltk lemmatizer to normalise inputs
 # Normalising will be done on questions list once we want to compare the user input with the questions
@@ -243,11 +281,48 @@ def find_astrophotography(search_term):
         return error_msg
 
 def classify():
-    return 'recognised model'
+    test_datagen = ImageDataGenerator(rescale=1. / 255)
+    test_generator = test_datagen.flow_from_directory(
+        "./uploaded/",
+        class_mode=None,
+        color_mode="rgb",
+        batch_size=1,
+        target_size=(224, 224),
+        seed=123,
+        shuffle=False)
+
+    test_generator.reset()
+
+    predictions = model.predict_generator(test_generator,
+    steps=test_generator.n / test_generator.batch_size,
+    verbose=1)
+
+    data = []
+    for x in predictions[0]:
+        data.append(float(x))
+    return(classification_answer(data, '', 0))
+
+def classification_answer(data, response, question_number):
+    answers_range = classification_answer_ranges[question_number]
+    q_answers = data[answers_range[0]:answers_range[1]]
+    final_answer = max(q_answers)
+    answer_index = answers_range[0] + q_answers.index(final_answer)
+    if next_question[answer_index] != -1:
+        response = classification_answer(data, response, next_question[answer_index]-1)
+    response = classification_questions[question_number] + '<br> - ' + classification_answers[answer_index] + '<br>' + response 
+    return response
+
+def load(filename):
+   np_image = Image.open(filename)
+   np_image = np.array(np_image).astype('float32')/255
+   np_image = transform.resize(np_image, (224, 224, 3))
+   np_image = np.expand_dims(np_image, axis=0)
+   return np_image
 
 if __name__ == '__main__':
     # Load the data from the text file and start the flask website
     # Note, the console will output the link where the Chatbot can be accessed in (Usually: http://127.0.0.1:5000/)
     # Please enter that link to interact with the chatbot 
     load_data()
+    model = load_model('trained_model.h5')
     app.run()
