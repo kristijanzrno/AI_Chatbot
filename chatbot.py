@@ -281,23 +281,23 @@ def find_astrophotography(search_term):
         return error_msg
 
 def classify():
-    test_datagen = ImageDataGenerator(rescale=1. / 255)
-    test_generator = test_datagen.flow_from_directory(
+    test_data_generator = ImageDataGenerator(rescale=1. / 255)
+    test_batch_generator = test_data_generator.flow_from_directory(
         "./uploaded/",
         class_mode=None,
         color_mode="rgb",
         batch_size=1,
         target_size=(224, 224),
-        seed=123,
         shuffle=False)
-
-    test_generator.reset()
-    predictions = model.predict_generator(test_generator, steps=test_generator.n / test_generator.batch_size, verbose=1)
+        
+    test_batch_generator.reset()
+    predictions = model.predict_generator(test_batch_generator,
+    steps=test_batch_generator.n/test_batch_generator.batch_size)
 
     data = []
     for x in predictions[0]:
         data.append(float(x))
-    os.remove('./uploaded/' + test_generator.filenames[0])
+    os.remove('./uploaded/' + test_batch_generator.filenames[0])
 
     return(classification_answer(data, '', 0))
 
@@ -310,13 +310,6 @@ def classification_answer(data, response, question_number):
         response = classification_answer(data, response, next_question[answer_index]-1)
     response = classification_questions[question_number] + '<br> - ' + classification_answers[answer_index] + '<br>' + response 
     return response
-
-def load(filename):
-   np_image = Image.open(filename)
-   np_image = np.array(np_image).astype('float32')/255
-   np_image = transform.resize(np_image, (224, 224, 3))
-   np_image = np.expand_dims(np_image, axis=0)
-   return np_image
 
 if __name__ == '__main__':
     # Load the data from the text file and start the flask website

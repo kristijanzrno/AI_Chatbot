@@ -40,7 +40,7 @@ datagen = ImageDataGenerator(
     vertical_flip=True,
     validation_split=0.1)
 
-train_generator = datagen.flow_from_dataframe(
+training_batch_generator = datagen.flow_from_dataframe(
     dataframe=csv_data,
     directory="data/training",
     x_col="id",
@@ -52,7 +52,7 @@ train_generator = datagen.flow_from_dataframe(
     class_mode="raw",
     target_size=(224, 224))
 
-valid_generator = datagen.flow_from_dataframe(
+validation_batch_generator = datagen.flow_from_dataframe(
     dataframe=csv_data,
     directory="data/training",
     x_col="id",
@@ -64,8 +64,8 @@ valid_generator = datagen.flow_from_dataframe(
     class_mode="raw",
     target_size=(224, 224))
 
-training_step_size = int(train_generator.n / train_generator.batch_size)
-validation_step_size = int(valid_generator.n / valid_generator.batch_size)
+training_step_size = int(training_batch_generator.n/training_batch_generator.batch_size)
+validation_step_size = int(validation_batch_generator.n/validation_batch_generator.batch_size)
 
 # In[3]:
 
@@ -109,9 +109,9 @@ checkpointer = ModelCheckpoint(
 # In[5]:
 
 history = model.fit_generator(
-    train_generator,
+    training_batch_generator,
     steps_per_epoch=training_step_size,
-    validation_data=valid_generator,
+    validation_data=validation_batch_generator,
     validation_steps=validation_step_size,
     epochs=50,
     verbose=2,
