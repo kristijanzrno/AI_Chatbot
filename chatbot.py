@@ -1,3 +1,4 @@
+import os
 import aiml
 import nltk
 import string
@@ -98,9 +99,8 @@ def get_bot_response():
 def upload_file():
     if 'file' in request.files:
         photo = request.files['file']
-        photo.save('uploaded/'+photo.filename)
-        to_classify = photo.filename
-        print(to_classify)
+        photo.save('uploaded/data/'+photo.filename)
+
 
 # Using nltk lemmatizer to normalise inputs
 # Normalising will be done on questions list once we want to compare the user input with the questions
@@ -292,14 +292,13 @@ def classify():
         shuffle=False)
 
     test_generator.reset()
-
-    predictions = model.predict_generator(test_generator,
-    steps=test_generator.n / test_generator.batch_size,
-    verbose=1)
+    predictions = model.predict_generator(test_generator, steps=test_generator.n / test_generator.batch_size, verbose=1)
 
     data = []
     for x in predictions[0]:
         data.append(float(x))
+    os.remove('./uploaded/' + test_generator.filenames[0])
+
     return(classification_answer(data, '', 0))
 
 def classification_answer(data, response, question_number):
