@@ -16,7 +16,7 @@ body {
 .chatbox {
   width: 500px;
   min-width: 390px;
-  height: 600px;
+  height: 700px;
   background: #fff;
   padding: 25px;
   margin: 20px auto;
@@ -27,7 +27,7 @@ body {
 .chatlogs {
   padding: 10px;
   width: 100%;
-  height: 450px;
+  height: 580px;
   overflow-x: hidden;
   overflow-y: scroll;
 }
@@ -142,9 +142,7 @@ body {
 }
 
 .chat-form img {
-  display: block;
-  height: 64;
-  width: 64;
+  height:46px;
   border: none;
   border-radius: 5%;
   margin: 0 5px;
@@ -156,6 +154,7 @@ body {
 }
 
 .chat-form button {
+  height:46px;
   background: #CAB4CC;
   padding: 5px 15px;
   font-size: 30px;

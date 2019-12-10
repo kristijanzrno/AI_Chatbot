@@ -9,17 +9,18 @@
     <div class="chatbox" id="chatbox">
       <div class="chatlogs" id="chatlogs">
         <div class="chat bot">
-          <div class="user-photo"><img src="../static/robot.png"></div>
-          <p class="chat-message">Hi there, I'm your Astrology chatbot! You can ask me things like:<br>
-            When does the moon set at Nottingham?<br>
-            Show me NASA photo of the day!<br>
-            What time is the sunrise at London?<br>
-            What does the orion look like?<br>
-            Show me an image of horsehead nebula!<br>
-            Or some general Astronomy questions like: <br>
-            How hot is the sun?<br>
-            How cold is pluto?<br>
-            What is a black hole?<br>
+          <div class="user-photo"><img src="../static/robot.png" /></div>
+          <p class="chat-message">
+            Hi there, I'm your Astrology chatbot! You can ask me things like:<br />
+            When does the moon set at Nottingham?<br />
+            Show me NASA photo of the day!<br />
+            What time is the sunrise at London?<br />
+            What does the orion look like?<br />
+            Show me an image of horsehead nebula!<br />
+            Or some general Astronomy questions like: <br />
+            How hot is the sun?<br />
+            How cold is pluto?<br />
+            What is a black hole?<br />
           </p>
         </div>
       </div>
@@ -31,18 +32,24 @@
           rows="1"
           placeholder="Ask something..."
         ></textarea>
-        <form name="uploadForm" method="POST"enctype="multipart/form-data">
-        <input type="file" name='file' id="imgUpload" style="display:none" accept="image/png, image/jpeg"/> 
-        <img id="imageInput" type="button" src="../static/upload_icon.png" width="62" height="62"/>
-      </form>
+        <form name="uploadForm" method="POST" enctype="multipart/form-data">
+          <input
+            type="file"
+            name="file"
+            id="imgUpload"
+            style="display:none"
+            accept="image/png, image/jpeg"
+          />
+          <img id="imageInput" type="button" src="../static/upload_icon.png" />
+        </form>
         <button id="buttonInput" type="submit">Send</button>
       </div>
     </div>
     <script>
       function getBotAnswer() {
         var rawText = $("#textInput").val();
-        rawText = rawText.replace(/^\s+|\s+$/g, '')
-        if(rawText==="")return;
+        rawText = rawText.replace(/^\s+|\s+$/g, "");
+        if (rawText === "") return;
         var userMessage =
           '<div class="chat self"><div class="user-photo"><img src="../static/user.png"></div><p class="chat-message">' +
           rawText +
@@ -53,19 +60,20 @@
         chatlog.scrollTop = chatlog.scrollHeight;
         $.get("/get", { msg: rawText }).done(function(data) {
           var botMessage;
-          if(data.startsWith("img=")){
-            botMessage = '<div class="chat bot"><div class="user-photo"><img src="../static/robot.png"></div><p class="chat-photo"> <img src="' +
-            data.slice(4) +
-            '"></p>';
-          }else{
-           botMessage =
-            '<div class="chat bot"><div class="user-photo"><img src="../static/robot.png"></div><p class="chat-message">' +
-            data +
-            '</p>';
+          if (data.startsWith("img=")) {
+            botMessage =
+              '<div class="chat bot"><div class="user-photo"><img src="../static/robot.png"></div><p class="chat-photo"> <img src="' +
+              data.slice(4) +
+              '"></p>';
+          } else {
+            botMessage =
+              '<div class="chat bot"><div class="user-photo"><img src="../static/robot.png"></div><p class="chat-message">' +
+              data +
+              "</p>";
           }
           $("#chatlogs").append(botMessage);
           chatlog.scrollTop = chatlog.scrollHeight;
-          document.getElementById("textInput").value='';
+          document.getElementById("textInput").value = "";
         });
       }
       $("#textInput").keypress(function(e) {
@@ -76,41 +84,46 @@
       $("#buttonInput").click(function() {
         getBotAnswer();
       });
-      $("#imageInput").click(function(){
-        $('#imgUpload').trigger('click');
+      $("#imageInput").click(function() {
+        $("#imgUpload").trigger("click");
       });
-      
-      $("#imgUpload").change(function(){
+
+      $("#imgUpload").change(function() {
         var formData = new FormData();
-        formData.append('file', this.files[0]);
+        formData.append("file", this.files[0]);
         $.ajax({
-          type: 'POST',
-          url: '/upload',
+          type: "POST",
+          url: "/upload",
           data: formData,
           contentType: false,
           cache: false,
           processData: false,
-          success: function(data){
-            console.log('Success');
-          },
+          success: function(data) {
+            console.log("Success");
+          }
         });
-        var im = URL.createObjectURL(this.files[0])
+        var im = URL.createObjectURL(this.files[0]);
         var chatlog = document.getElementById("chatlogs");
-        userMessage = '<div class="chat self"><div class="user-photo"><img src="../static/user.png"></div><p class="chat-photo"> <img src="' + im +  '"></p>';
-        botMessage = '<div class="chat bot"><div class="user-photo"><img src="../static/robot.png"></div><p class="chat-message">' + 'Performing classification...' + '</p>';
+        userMessage =
+          '<div class="chat self"><div class="user-photo"><img src="../static/user.png"></div><p class="chat-photo"> <img src="' +
+          im +
+          '"></p>';
+        botMessage =
+          '<div class="chat bot"><div class="user-photo"><img src="../static/robot.png"></div><p class="chat-message">' +
+          "Performing classification..." +
+          "</p>";
         $("#chatlogs").append(userMessage);
         $("#chatlogs").append(botMessage);
         chatlog.scrollTop = chatlog.scrollHeight;
-        $.get("/get", { msg: '__csf__' }).done(function(data) {
+        $.get("/get", { msg: "__csf__" }).done(function(data) {
           botMessage =
             '<div class="chat bot"><div class="user-photo"><img src="../static/robot.png"></div><p class="chat-message">' +
             data +
-            '</p>';
-            $("#chatlogs").append(botMessage);
-            chatlog.scrollTop = chatlog.scrollHeight;
+            "</p>";
+          $("#chatlogs").append(botMessage);
+          chatlog.scrollTop = chatlog.scrollHeight;
         });
       });
-
     </script>
   </body>
 </html>

@@ -130,7 +130,7 @@ for layer in model.layers:
 # After some tweaking, the best results were achieved using the RMS optimiser with learning rate 1e-4
 # Learning rates le-6 and le-2 were also tried, but the current one gave the best results
 # Adam optimiser has also been tried with another model architecture, but RMS was still giving the best results
-# Adam optimiser results with the ResNet50 network can be found in the appendix section of conversation log
+# Adam optimiser results with the ResNet50 model network can be found in the appendix section of conversation log
 optimizer = RMSprop(lr=1e-4)
 model.compile(loss='mse', optimizer=optimizer, metrics=['accuracy'])
 
