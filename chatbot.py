@@ -66,7 +66,9 @@ be_in => {} """
 # v = """ planets => {} galaxies => {} stars => {} nebulaes => {} moons => {} favourite galaxies => fg field2 => f2 field3 => f3 field4 => f4 be_in => {} """
 folval = nltk.Valuation.fromstring(v)
 grammar = nltk.data.load('simple-sem.fcfg')
-
+val_assumptions = []
+fc = 5
+oc = 1
 # Could not build Mace due to macOS CPP related errors (Mace makefile g++ incompatible with XCode clang++11) 
 # model_builder = nltk.Mace()
 # read_expr = nltk.sem.Expression.fromstring
@@ -233,38 +235,23 @@ def process_query(user_input):
             return 
         # ONE OF MY FAVOURITE * IS *
         elif cmd == 7: 
+            global oc
             o = params[2]
-            folval['o'+ o] = o
-            #q0 = read_expr('be_in x.y')
-            #q1 = read_expr(params[1]+'(saturn)')
-            #q1 = read_expr(params[1])
-            #q2 = read_expr('planets('+params[2]+')')
-            #q3 = read_expr('planets(saturn)')
-            #q4 = read_expr('planets(testetst)')
-            #expression = read_expr('be_in('+params[2]+','+params[1]+')')
-            #mc = nltk.MaceCommand(None, assumptions=[q2,q3,q4,expression])
-            #mc.add_assumptions([q3])
-            #mc.build_model()
-            #mc.print_assumptions()
-            #print(mc.valuation)
-            #cleanup
+            add_knowledge(o, 'o'+str(oc), None, True, False)
             if params[1] not in folval:
-                folval.add(params[1], '')
-                folval[params[1]] = {}
-                lhs = nltk.grammar.Nonterminal('PropN[-LOC,NUM=pl,SEM=<\P.P('+params[1]+')>]')
-                rhs = nltk.grammar.Nonterminal(params[1])
-                new_production = nltk.grammar.Production(lhs, [rhs])
-                rules = grammar.productions()
-                rules.append(new_production)
-           # 
-            if len(folval[params[1]]) == 1:
-                if('',) in folval[params[1]]:
-                    folval[params[1]].clear()
-            folval[params[1]].add((o,))
-            if len(folval['be_in']) == 1:
-                if('',) in folval['be_in']:
-                    folval['be_in'].clear()
-            folval["be_in"].add((o, folval[params[1]]))
+                update_valuation(params[1], True)
+                update_grammar(params[1])
+            #add_knowledge(params[1], o, None, False)
+            add_knowledge('be_in', o, folval[params[1]], False, False)
+            #if len(folval[params[1]]) == 1:
+            #    if('',) in folval[params[1]]:
+            #        folval[params[1]].clear()
+            #folval[params[1]].add((o,))
+            #if len(folval['be_in']) == 1:
+             #   if('',) in folval['be_in']:
+            #        folval['be_in'].clear()
+            #folval["be_in"].add((o, folval[params[1]]))
+            print(folval)
             return confirmation_message
         # FOL - "What are my favourite *"
         elif cmd == 11:
@@ -427,6 +414,43 @@ def classification_answer(data, response, question_number):
     # by the recursive calls
     response = classification_questions[question_number] + '<br> - ' + classification_answers[answer_index] + '<br>' + response 
     return response
+
+
+def update_valuation(word, field):
+    global v, folval, fc
+    if field:
+        word += ' => f'+ str(fc)
+        fc+=1
+    else:
+        word += ' => {}'
+    v += '\n'+word;
+    folval = nltk.Valuation.fromstring(v)
+    for apt in val_assumptions:
+        add_knowledge(apt[0], apt[1], apt[2], apt[3], True)
+
+def update_grammar(word):
+    lhs = nltk.grammar.Nonterminal('PropN[-LOC,NUM=pl,SEM=<\P.P('+word+')>]')
+    rhs = nltk.grammar.Nonterminal(word)
+    new_production = nltk.grammar.Production(lhs, [rhs])
+    rules = grammar.productions()
+    rules.append(new_production)
+
+def clean_object(pos):
+    if len(folval[pos]) == 1:
+        if('',) in folval[pos]:
+            folval[pos].clear()
+
+def add_knowledge(pos, a, b, obj, updating):
+    global v, folval, oc
+    if obj:
+        folval[pos] = a
+        oc+=1
+    else:
+        clean_object(pos)
+        folval[pos].add((a, b))
+    if not updating:
+        val_assumptions.append((pos, a, b, obj))
+
 
 if __name__ == '__main__':
     # Load the data from the text file and start the flask website
