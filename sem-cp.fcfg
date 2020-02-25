@@ -9,6 +9,8 @@
 
 ## modified by Benjamin Inden, Nottingham Trent University
 
+## modified by Kristijan Zrno
+
 % start S
 ############################
 # Grammar Rules
@@ -31,10 +33,7 @@ PP[+TO, SEM=?np] -> P[+TO] NP[SEM=?np]
 # Lexical Rules
 #############################
 
-PropN[-LOC,NUM=sg,SEM=<\P.P(angus)>] -> 'Angus'
-PropN[-LOC,NUM=sg,SEM=<\P.P(brutus)>] -> 'Brutus'
-PropN[-LOC,NUM=sg,SEM=<\P.P(cyril)>] -> 'Cyril'
-PropN[-LOC,NUM=sg,SEM=<\P.P(irene)>] -> 'Irene'
+
 PropN[-LOC,NUM=pl,SEM=<\P.P(favourite_galaxies)>] -> 'favourite_galaxies'
 PropN[-LOC,NUM=pl,SEM=<\P.P(favourite_planets)>] -> 'favourite_planets'
 PropN[-LOC,NUM=pl,SEM=<\P.P(favourite_nebulaes)>] -> 'favourite_nebulaes'
@@ -52,36 +51,13 @@ N[NUM=pl,SEM=<\x.planets(x)>] -> 'planets'
 N[NUM=pl,SEM=<\x.stars(x)>] -> 'stars'
 N[NUM=pl,SEM=<\x.moons(x)>] -> 'moons'
 N[NUM=pl,SEM=<\x.nebulaes(x)>] -> 'nebulaes'
-N[NUM=pl,SEM=<\x.lettuces(x)>] -> 'lettuces'
-N[NUM=pl,SEM=<\x.cabbages(x)>] -> 'cabbages'
-N[NUM=pl,SEM=<\x.mustards(x)>] -> 'mustards'
-N[NUM=pl,SEM=<\x.potatoes(x)>] -> 'potatoes'
-N[NUM=pl,SEM=<\x.onions(x)>] -> 'onions'
-N[NUM=pl,SEM=<\x.carrots(x)>] -> 'carrots'
-N[NUM=pl,SEM=<\x.beans(x)>] -> 'beans'
-N[NUM=pl,SEM=<\x.peas(x)>] -> 'peas'
-N[NUM=sg,SEM=<\x.man(x)>] -> 'man'
-N[NUM=sg,SEM=<\x.girl(x)>] -> 'girl'
-N[NUM=sg,SEM=<\x.boy(x)>] -> 'boy'
-N[NUM=sg,SEM=<\x.bone(x)>] -> 'bone'
-N[NUM=sg,SEM=<\x.ankle(x)>] -> 'ankle'
-N[NUM=sg,SEM=<\x.dog(x)>] -> 'dog'
-N[NUM=pl,SEM=<\x.dog(x)>] -> 'dogs'
-N[NUM=sg,SEM=<\x.cat(x)>] -> 'cat'
-N[NUM=pl,SEM=<\x.cat(x)>] -> 'cats'
 
-IV[NUM=sg,SEM=<\x.bark(x)>,TNS=pres] -> 'barks'
-IV[NUM=pl,SEM=<\x.bark(x)>,TNS=pres] -> 'bark'
-IV[NUM=sg,SEM=<\x.walk(x)>,TNS=pres] -> 'walks'
-IV[NUM=pl,SEM=<\x.walk(x)>,TNS=pres] -> 'walk'
-TV[NUM=sg,SEM=<\X x.X(\y.chase(x,y))>,TNS=pres] -> 'chases'
-TV[NUM=pl,SEM=<\X x.X(\y.chase(x,y))>,TNS=pres] -> 'chase'
-TV[NUM=sg,SEM=<\X x.X(\y.see(x,y))>,TNS=pres] -> 'sees'
-TV[NUM=pl,SEM=<\X x.X(\y.see(x,y))>,TNS=pres] -> 'see'
-TV[NUM=sg,SEM=<\X x.X(\y.hear(x,y))>,TNS=pres] -> 'hears'
-TV[NUM=pl,SEM=<\X x.X(\y.hear(x,y))>,TNS=pres] -> 'hear'
-TV[NUM=sg,SEM=<\X x.X(\y.bite(x,y))>,TNS=pres] -> 'bites'
-TV[NUM=pl,SEM=<\X x.X(\y.bite(x,y))>,TNS=pres] -> 'bite'
+N[NUM=sg,SEM=<\x.galaxies(x)>] -> 'galaxie'
+N[NUM=sg,SEM=<\x.planets(x)>] -> 'planet'
+N[NUM=sg,SEM=<\x.stars(x)>] -> 'star'
+N[NUM=sg,SEM=<\x.moons(x)>] -> 'moon'
+N[NUM=pl,SEM=<\x.nebulaes(x)>] -> 'nebulae'
+
 TV[NUM=sg,SEM=<\X x.X(\y.be_in(x,y))>,TNS=pres] -> 'is_in'
 TV[NUM=pl,SEM=<\X x.X(\y.be_in(x,y))>,TNS=pres] -> 'are_in'
 TV[NUM=pl,SEM=<\X x.X(\y.be_in(x,y))>,TNS=pres] -> 'what_are'
@@ -90,5 +66,8 @@ DTV[NUM=sg,SEM=<\Y X x.X(\z.Y(\y.give(x,y,z)))>,TNS=pres] -> 'gives'
 DTV[NUM=pl,SEM=<\Y X x.X(\z.Y(\y.give(x,y,z)))>,TNS=pres] -> 'give'
 
 P[+to] -> 'to'
-PropN[-LOC,NUM=pl,SEM=<\P.P(favourite_andromeda_stars)>] -> 'favourite_andromeda_stars'
-PropN[-LOC,NUM=pl,SEM=<\P.P(favourite_milky_stars)>] -> 'favourite_milky_stars'
+
+##
+## Note that the chatbot is made to add new rules to the file while running
+##
+
