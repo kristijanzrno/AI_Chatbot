@@ -71,14 +71,14 @@ body {
 }
 
 .bot .chat-message {
-  background: #FDE69E;
+  background: rgb(238, 200, 86);
 }
 
 .bot .chat-photo {
   width: 70%;
   padding: 15px;
   margin: 5px 10px 0;
-  background: #FDE69E;
+  background: rgb(238, 200, 86);
   border-radius: 10px;
   color: #fff;
   font-size: 18px;

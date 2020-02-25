@@ -261,16 +261,20 @@ def process_query(user_input):
         # Show photo of 1 of favourite *
         elif cmd == 17:
             try:
+                # Getting all favourites, and randomly picking 1
                 values = get_all_values('favourite_'+params[1])
                 val_arr = values.split(', ')
+                # Searching for a photo of a randomly picked favourite object
                 return find_astrophotography(search_term=random.choice(val_arr))
             except:
                 return error_msg
         # FOL - SHOW ME A PHOTO OF ONE OF MY FAVOURITE * IN *
         elif cmd == 18:
             try:
+                # Getting all favourites, and randomly picking 1
                 values = get_all_values('favourite_'+params[2]+'_'+params[1])
                 val_arr = values.split(', ')
+                # Searching for a photo of a randomly picked favourite object
                 return find_astrophotography(search_term=random.choice(val_arr))
             except:
                 return error_msg 
@@ -423,44 +427,66 @@ def classification_answer(data, response, question_number):
 # FOL Functions
 ############################################################################
 
+# Since I wasn't able to build Mace4 on macOS due to c++ compatibility errors,
+# I attempted to create my own valuation builder
+# Each assumption during valuation is stored in val_assumptions so therefore,
+# when valuation is re-created, all the knowledge from assumtpions can be re-inserted
+
+# This function will add a new valuation field/array if it is not already in there
 def update_valuation(word, field):
     global v, folval, fc
+    # if it is a field then add word => field_number
     if field:
         word += ' => f'+ str(fc)
         fc+=1
+    # else add word => {}
     else:
         word += ' => {}'
     v += '\n'+word;
+    # Reloading the new valuation
     folval = nltk.Valuation.fromstring(v)
+
     for apt in val_assumptions:
         add_knowledge(apt[0], apt[1], apt[2], apt[3], True)
 
+# Updating the grammar file with new rules needed for chatbot functionality
 def update_grammar(word, num):
     global grammar_data, grammar
+    # Manually creating the definition on the left side
     if num:
         lhs = nltk.grammar.Nonterminal(r'N[NUM=pl,SEM=<\x.'+word+'(x)>]')
     else:
         lhs = nltk.grammar.Nonterminal('PropN[-LOC,NUM=pl,SEM=<\P.P('+word+')>]')
+    # And add the word on the right side    
     rhs = nltk.grammar.Nonterminal("""'"""+word+"""'""")
     new_production = nltk.grammar.Production(lhs, [rhs])
+    # Appending the new rule to the file (copy of a original file)
     with open(grammar_file, 'a') as f:
         f.write('\n'+str(new_production))
 
+# Getting a value of a constaint value in valuation
 def get_singleton_value(key):
     if folval[key]:
         return str(folval[key]).capitalize()
     return error_msg
 
+# Getting all values for a specific key in valuation
+# Used when finding all favourite objects, or all favourite objects
+# on a specific place
 def get_all_values(key):
     try:
+        # Creating the nltk expression and inserting the given key in it
         g = nltk.Assignment(folval.domain)
         m = nltk.Model(folval.domain, folval)
         e = nltk.Expression.fromstring("be_in(x," + key + ")")
+        # Checking if the data satisfies the given expression
         sat = m.satisfiers(e, "x", g)
         res = ''
         if len(sat) == 0:
             res = 'None'
         else:
+            # If there are results, add them 1 by 1 to a string
+            # and separate them with commas
             for i in sat:
                 res += i + ', '
         res = res[:-2]
@@ -468,21 +494,30 @@ def get_all_values(key):
     except:
         print(error_msg)
 
+# Used when inserting a in b 
+# Using the be_in identifier
 def add_connected(obj, obj_cont, cont):
     try:
+        # First creating the object that is getting inserted
         add_knowledge(pos=obj, a='o'+str(oc), b=None, obj=True, updating=False)
+        # Checking if the type of the object that is getting inserted exists
+        # If not create it (using the above created update_valuation & update_grammar functions)
         if obj_cont not in folval:
             update_valuation(obj_cont, False)
             update_grammar(obj_cont, True)
+        # Checking if the field where the object is getting inserted exists
+        # If not, create it
         if cont not in folval:
             update_valuation(cont, True)
             update_grammar(cont, False)
+        # Adding the object to its type & adding it into the field
         add_knowledge(pos = obj_cont, a = obj, b=None, obj = False, updating=False)
         add_knowledge(pos ='be_in', a = obj, b=folval[cont], obj = False, updating=False)
         return confirmation_message
     except:
         return error_msg
-    
+
+# Used to clean the initial ('',) when an object is added
 def clean_object(pos):
     try:
         if len(folval[pos]) == 1:
@@ -491,35 +526,43 @@ def clean_object(pos):
     except:
         print(error_msg)
 
+# Inserting the objects in valuation
 def add_knowledge(pos, a, b, obj, updating):
     try:
         global v, folval, oc
+        # If it's a simple object, insert it and iterate oc (object counter)
         if obj:
             folval[pos] = a
             oc+=1
         else:
+            # else insert the object into field / type 
             clean_object(pos)
             if b == None:
                 folval[pos].add((a,))
             else:
                 folval[pos].add((a,b)) 
+        # If the valuation is not currently updating, add the assumption to the list
+        # If it was updating, and this statement wasn't present, program would end up in infinite loop (assumptions endlessly inserted and re-created)
         if not updating:
             val_assumptions.append((pos, a, b, obj))
         return confirmation_message
     except:
         return error_msg
 
+# Checking the relationships between different objects
 def check_condition(items, cont, quantity):
-   # try:
-        print(folval)
+    try:
         g = nltk.Assignment(folval.domain)
         m = nltk.Model(folval.domain, folval)
+        # Checking if a field has all/any(some) items in it
         sent = quantity+' ' + items + ' are_in ' + cont
         results = nltk.evaluate_sents([sent], grammar_file, m, g)[0][0]
-        print(results)
-        return str(results[2])
-   # except:
-    #    return error_msg
+        if results[2]:
+            return 'Yes.'
+        else: 
+            return 'No.'
+    except:
+        return error_msg
 
 if __name__ == '__main__':
     # Load the data from the text file and start the flask website
