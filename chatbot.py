@@ -53,6 +53,10 @@ kernel.bootstrap(learnFiles='rules.xml')
 # Initializing FOL agent
 v = """
 planets => {}
+galaxies => {}
+nebulaes => {}
+stars => {}
+moons => {}
 favourite_galaxies => fg
 favourite_planets => fp
 favourite_nebulaes => fn
@@ -60,10 +64,12 @@ favourite_stars => fs
 favourite_moons => fm
 be_in => {} """
 # v = """ planets => {} galaxies => {} stars => {} nebulaes => {} moons => {} favourite galaxies => fg field2 => f2 field3 => f3 field4 => f4 be_in => {} """
-#folval = nltk.Valuation.fromstring(v)
+folval = nltk.Valuation.fromstring(v)
 grammar = nltk.data.load('simple-sem.fcfg')
-model_builder = nltk.Mace()
-read_expr = nltk.sem.Expression.fromstring
+
+# Could not build Mace due to macOS CPP related errors (Mace makefile g++ incompatible with XCode clang++11) 
+# model_builder = nltk.Mace()
+# read_expr = nltk.sem.Expression.fromstring
 
 # Image Clasiffication Question order resembling the GalaxyZoo flowchart
 # There are 11 questions and 37 answers in total (37 classes)
@@ -208,12 +214,12 @@ def process_query(user_input):
             return
         # FOL - "My favourite * is * "
         elif cmd == 6: 
-            q1 = read_expr(params[1]+'=> {}' )
-            q2 = read_expr('planets('+params[2]+')')
-            expression = read_expr('be_in('+params[2]+','+params[1]+')')
-            model_builder = nltk.MaceCommand(expression, assumptions=[q1, q2])
-            model_builder.build_model()
-            print(model_builder.valuation)
+            #q1 = read_expr(params[1]+'=> {}' )
+            #q2 = read_expr('planets('+params[2]+')')
+            #expression = read_expr('be_in('+params[2]+','+params[1]+')')
+            #model_builder = nltk.MaceCommand(expression, assumptions=[q1, q2])
+            #model_builder.build_model()
+            #print(model_builder.valuation)
             #folval['o' + o] = o
             #cleanup
             #if len(folval[params[1]]) == 1:
@@ -227,39 +233,38 @@ def process_query(user_input):
             return 
         # ONE OF MY FAVOURITE * IS *
         elif cmd == 7: 
-            #o = params[2]
-            #folval['o'+ o] = o
+            o = params[2]
+            folval['o'+ o] = o
             #q0 = read_expr('be_in x.y')
             #q1 = read_expr(params[1]+'(saturn)')
-            q1 = read_expr(params[1])
-            q2 = read_expr('planets('+params[2]+')')
-            q3 = read_expr('planets(saturn)')
-            expression = read_expr('love('+params[2]+', saturn)')
-            mc = nltk.MaceCommand(None, assumptions=[q1,q2,q3,expression])
-            mc.build_model()
-            q3 = read_expr('planets(testetst)')
-            mc.add_assumptions([q3])
-            mc.build_model()
-            print(mc.valuation)
-            print(mc.valuation['love'])
+            #q1 = read_expr(params[1])
+            #q2 = read_expr('planets('+params[2]+')')
+            #q3 = read_expr('planets(saturn)')
+            #q4 = read_expr('planets(testetst)')
+            #expression = read_expr('be_in('+params[2]+','+params[1]+')')
+            #mc = nltk.MaceCommand(None, assumptions=[q2,q3,q4,expression])
+            #mc.add_assumptions([q3])
+            #mc.build_model()
+            #mc.print_assumptions()
+            #print(mc.valuation)
             #cleanup
-            #if params[1] not in folval:
-            #    folval.add(params[1], '')
-            #   #folval[params[1]] = {}
-            #    lhs = nltk.grammar.Nonterminal('PropN[-LOC,NUM=pl,SEM=<\P.P('+params[1]+')>]')
-            #    rhs = nltk.grammar.Nonterminal(params[1])
-            #    new_production = nltk.grammar.Production(lhs, [rhs])
-            #    rules = grammar.productions()
-            #    rules.append(new_production)
+            if params[1] not in folval:
+                folval.add(params[1], '')
+                folval[params[1]] = {}
+                lhs = nltk.grammar.Nonterminal('PropN[-LOC,NUM=pl,SEM=<\P.P('+params[1]+')>]')
+                rhs = nltk.grammar.Nonterminal(params[1])
+                new_production = nltk.grammar.Production(lhs, [rhs])
+                rules = grammar.productions()
+                rules.append(new_production)
            # 
-           # if len(folval[params[1]]) == 1:
-            #    if('',) in folval[params[1]]:
-            #        folval[params[1]].clear()
-            #folval[params[1]].add((o,))
-            #if len(folval['be_in']) == 1:
-            #    if('',) in folval['be_in']:
-            #        folval['be_in'].clear()
-            #folval["be_in"].add((o, folval[params[1]]))
+            if len(folval[params[1]]) == 1:
+                if('',) in folval[params[1]]:
+                    folval[params[1]].clear()
+            folval[params[1]].add((o,))
+            if len(folval['be_in']) == 1:
+                if('',) in folval['be_in']:
+                    folval['be_in'].clear()
+            folval["be_in"].add((o, folval[params[1]]))
             return confirmation_message
         # FOL - "What are my favourite *"
         elif cmd == 11:
