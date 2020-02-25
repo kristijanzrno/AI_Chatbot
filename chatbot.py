@@ -224,30 +224,45 @@ def process_query(user_input):
         elif cmd == 5:
             return add_knowledge(pos='location', a=params[1], b=None, obj=True, updating=False)
         # FOL - "My favourite * is * "
-        elif cmd == 6: 
-
-            return 
-        # ONE OF MY FAVOURITE * IS *
+        elif cmd == 6:
+            return add_knowledge(pos='most_favourite_'+params[1], a=params[2], b=None, obj=True, updating=False) 
+        # FOL - ONE OF MY FAVOURITE * IS *
         elif cmd == 7: 
-                return add_connected(params[2], params[1], 'favourite_'+params[1])
+            return add_connected(obj=params[2], obj_cont=params[1], cont='favourite_'+params[1])
+        # FOL - ONE OF MY FAVOURITE * IN * IS *
         elif cmd == 8: 
-
-            return 
-        # What is my name
+            return add_connected(obj=params[3], obj_cont=params[1], cont='favourite_'+params[2]+'_'+params[1])
+        # FOL - What is my name
         elif cmd == 9: 
-            return get_singleton_value('name').capitalize()
-        # My location
+            return get_singleton_value('name')
+        # FOL - My location
         elif cmd == 10: 
-            return get_singleton_value('location').capitalize()
-        # FOL - "What are my favourite *"
+            return get_singleton_value('location')
+        # FOL - FOL - "What are my favourite *"
         elif cmd == 11:
-            fav_str = 'favourite_'+params[1]
-            res = get_all_values(fav_str)
-            return res.capitalize()
-        #  WHAT ARE MY FAVOURITE * IN *
+            return get_all_values('favourite_'+params[1])
+        # FOL - WHAT ARE MY FAVOURITE * IN *
         elif cmd == 12: 
-            return ''
-
+            return get_all_values('favourite_'+params[2]+'_'+params[1])
+        # FOL - What is my favourite *
+        elif cmd == 13: 
+            return get_singleton_value('most_favourite_'+params[1])
+        # FOL - Are all favourite * in *
+        elif cmd == 14: 
+            return check_condition(params[1], 'favourite_'+params[2]+'_'+params[1], 'all')
+        # FOL - Are any favourite * in *
+        elif cmd == 15: 
+            return check_condition(params[1], 'favourite_'+params[2]+'_'+params[1], 'some')
+        # FOL - Show a photo of my favourite *
+        elif cmd == 16: 
+            return find_astrophotography(search_term=get_singleton_value('most_favourite_'+params[1]))
+        # Show Photos of * in *
+        elif cmd == 17: 
+            #TODO
+            return get_singleton_value('most_favourite_'+params[1])
+        # FOL - SHOW ME A PHOTO OF ONE OF MY FAVOURITE * IN *
+        elif cmd == 18:
+            return
         elif cmd == 99:
             # If the user question doesnt match any of the above queries, check the similarity of the query
             # with the questions loaded from 'data.txt' file; if any of them are matching enough (>0.8) 
@@ -422,7 +437,7 @@ def update_grammar(word, num):
 
 def get_singleton_value(key):
     if folval[key]:
-        return folval[key]
+        return str(folval[key]).capitalize()
     return error_msg
 
 def get_all_values(key):
@@ -438,7 +453,7 @@ def get_all_values(key):
             for i in sat:
                 res += i + ', '
                 res = res[:-2]
-        return res
+        return res.capitalize()
     except:
         print(error_msg)
 
@@ -474,7 +489,7 @@ def add_knowledge(pos, a, b, obj, updating):
         else:
             clean_object(pos)
             if b == None:
-                folval[pos].add((a))
+                folval[pos].add((a,))
             else:
                 folval[pos].add((a,b)) 
         if not updating:
@@ -482,6 +497,18 @@ def add_knowledge(pos, a, b, obj, updating):
         return confirmation_message
     except:
         return error_msg
+
+def check_condition(items, cont, quantity):
+   # try:
+        print(folval)
+        g = nltk.Assignment(folval.domain)
+        m = nltk.Model(folval.domain, folval)
+        sent = quantity+' ' + items + ' are_in ' + cont
+        results = nltk.evaluate_sents([sent], grammar_file, m, g)[0][0]
+        print(results)
+        return str(results[2])
+   # except:
+    #    return error_msg
 
 if __name__ == '__main__':
     # Load the data from the text file and start the flask website
