@@ -13,6 +13,7 @@ from keras.models import load_model
 from PIL import Image
 from skimage import transform
 import numpy as np
+from shutil import copyfile
 from keras.preprocessing.image import ImageDataGenerator
 
 # Important Note; The console will output the link where the Chatbot can be accessed in (Usually: http://127.0.0.1:5000/)
@@ -65,7 +66,8 @@ favourite_moons => fm
 be_in => {} """
 # v = """ planets => {} galaxies => {} stars => {} nebulaes => {} moons => {} favourite galaxies => fg field2 => f2 field3 => f3 field4 => f4 be_in => {} """
 folval = nltk.Valuation.fromstring(v)
-grammar = nltk.data.load('simple-sem.fcfg')
+grammar_file = "sem-cp.fcfg"
+#grammar = nltk.data.load('simple-sem.fcfg')
 val_assumptions = []
 fc = 5
 oc = 1
@@ -138,11 +140,13 @@ def lem_tokenizer(text):
 
 # Data loading function which loads questions and answers into two separate lists
 # Questions and answers are dividied by '::' symbol within a 'data.txt' file
+# Making temp grammar data as-well
 def load_data():
     data = open('data.txt', 'r')
     for line in data:
         questions.append(line.split('::')[0].lower())
         answers.append(line.split('::')[1])
+    copyfile('simple-sem.fcfg', grammar_file)  
 
 # Implementing similarity component using bag of words, tfidf and cosine similarity
 def check_similarity(user_input):
@@ -216,41 +220,22 @@ def process_query(user_input):
             return
         # FOL - "My favourite * is * "
         elif cmd == 6: 
-            #q1 = read_expr(params[1]+'=> {}' )
-            #q2 = read_expr('planets('+params[2]+')')
-            #expression = read_expr('be_in('+params[2]+','+params[1]+')')
-            #model_builder = nltk.MaceCommand(expression, assumptions=[q1, q2])
-            #model_builder.build_model()
-            #print(model_builder.valuation)
-            #folval['o' + o] = o
-            #cleanup
-            #if len(folval[params[1]]) == 1:
-            #    if('',) in folval[params[1]]:
-            #        folval[params[1]].clear()
-            #folval[params[1]].add((o,))
-            #if len(folval['be_in']) == 1:
-            #    if('',) in folval['be_in']:
-            #        folval['be_in'].clear()
-            #folval["be_in"].add((o, folval['favourite_'+params[1]]))
+
             return 
         # ONE OF MY FAVOURITE * IS *
         elif cmd == 7: 
             global oc
             o = params[2]
-            add_knowledge(o, 'o'+str(oc), None, True, False)
+            add_knowledge(pos=o, a='o'+str(oc), b=None, obj=True, updating=False)
+            fav_str = 'favourite_'+params[1]
             if params[1] not in folval:
-                update_valuation(params[1], True)
-                update_grammar(params[1])
-            #add_knowledge(params[1], o, None, False)
-            add_knowledge('be_in', o, folval[params[1]], False, False)
-            #if len(folval[params[1]]) == 1:
-            #    if('',) in folval[params[1]]:
-            #        folval[params[1]].clear()
-            #folval[params[1]].add((o,))
-            #if len(folval['be_in']) == 1:
-             #   if('',) in folval['be_in']:
-            #        folval['be_in'].clear()
-            #folval["be_in"].add((o, folval[params[1]]))
+                update_valuation(params[1], False)
+                update_grammar(params[1], True)
+            if fav_str not in folval:
+                update_valuation(fav_str, True)
+                update_grammar(fav_str, False)
+            add_knowledge(pos = params[1], a = o, b=None, obj = False, updating=False)
+            add_knowledge(pos ='be_in', a = o, b=fav_str, obj = False, updating=False)
             print(folval)
             return confirmation_message
         # FOL - "What are my favourite *"
@@ -259,7 +244,7 @@ def process_query(user_input):
             m = nltk.Model(folval.domain, folval)
             e = nltk.Expression.fromstring('be_in(x,' + params[1] + ')')
             print(folval)
-            sent =  'planets ' + 'are_in ' + params[1]
+            sent =  'all ' + 'planets ' + 'are_in ' + params[1]
             testResult = nltk.evaluate_sents([sent], grammar_file, m, g)[0][0]
             print(testResult)
             sat = m.satisfiers(e, "x", g)
@@ -428,12 +413,16 @@ def update_valuation(word, field):
     for apt in val_assumptions:
         add_knowledge(apt[0], apt[1], apt[2], apt[3], True)
 
-def update_grammar(word):
-    lhs = nltk.grammar.Nonterminal('PropN[-LOC,NUM=pl,SEM=<\P.P('+word+')>]')
-    rhs = nltk.grammar.Nonterminal(word)
+def update_grammar(word, num):
+    global grammar_data, grammar
+    if num:
+        lhs = nltk.grammar.Nonterminal(r'N[NUM=pl,SEM=<\x.'+word+'(x)>]')
+    else:
+        lhs = nltk.grammar.Nonterminal('PropN[-LOC,NUM=pl,SEM=<\P.P('+word+')>]')
+    rhs = nltk.grammar.Nonterminal("""'"""+word+"""'""")
     new_production = nltk.grammar.Production(lhs, [rhs])
-    rules = grammar.productions()
-    rules.append(new_production)
+    with open(grammar_file, 'a') as f:
+        f.write('\n'+str(new_production))
 
 def clean_object(pos):
     if len(folval[pos]) == 1:
@@ -447,7 +436,11 @@ def add_knowledge(pos, a, b, obj, updating):
         oc+=1
     else:
         clean_object(pos)
-        folval[pos].add((a, b))
+        if b == None:
+            folval[pos].add((a))
+        else:
+            folval[pos].add((a,b)) 
+
     if not updating:
         val_assumptions.append((pos, a, b, obj))
 
