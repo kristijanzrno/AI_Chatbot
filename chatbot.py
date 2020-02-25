@@ -60,9 +60,10 @@ favourite_stars => fs
 favourite_moons => fm
 be_in => {} """
 # v = """ planets => {} galaxies => {} stars => {} nebulaes => {} moons => {} favourite galaxies => fg field2 => f2 field3 => f3 field4 => f4 be_in => {} """
-folval = nltk.Valuation.fromstring(v) 
-grammar_file = 'simple-sem.fcfg' 
-objectCounter = 0
+#folval = nltk.Valuation.fromstring(v)
+grammar = nltk.data.load('simple-sem.fcfg')
+model_builder = nltk.Mace()
+read_expr = nltk.sem.Expression.fromstring
 
 # Image Clasiffication Question order resembling the GalaxyZoo flowchart
 # There are 11 questions and 37 answers in total (37 classes)
@@ -183,7 +184,6 @@ def process_query(user_input):
     response_agent = 'aiml'
     if response_agent == 'aiml':
         answer = kernel.respond(user_input)
-    print(answer)
     # Post-process the answer for commands
     if answer[0] == '#':
         params = answer[1:].split('$')
@@ -208,41 +208,68 @@ def process_query(user_input):
             return
         # FOL - "My favourite * is * "
         elif cmd == 6: 
-            objectCounter = 0
-            o = 'o' + str(objectCounter)
-            objectCounter +=1
-            folval['o' + o] = o
+            q1 = read_expr(params[1]+'=> {}' )
+            q2 = read_expr('planets('+params[2]+')')
+            expression = read_expr('be_in('+params[2]+','+params[1]+')')
+            model_builder = nltk.MaceCommand(expression, assumptions=[q1, q2])
+            model_builder.build_model()
+            print(model_builder.valuation)
+            #folval['o' + o] = o
             #cleanup
-            if len(folval[params[1]]) == 1:
-                if('',) in folval[params[1]]:
-                    folval[params[1]].clear()
-            folval[params[1]].add((o,))
-            if len(folval['be_in']) == 1:
-                if('',) in folval['be_in']:
-                    folval['be_in'].clear()
-            folval["be_in"].add((o, folval['favourite_'+params[1]]))
+            #if len(folval[params[1]]) == 1:
+            #    if('',) in folval[params[1]]:
+            #        folval[params[1]].clear()
+            #folval[params[1]].add((o,))
+            #if len(folval['be_in']) == 1:
+            #    if('',) in folval['be_in']:
+            #        folval['be_in'].clear()
+            #folval["be_in"].add((o, folval['favourite_'+params[1]]))
             return 
         # ONE OF MY FAVOURITE * IS *
         elif cmd == 7: 
-           # objectCounter = 0
-            o = params[2]
-            #objectCounter +=1
-            folval[o] = o
+            #o = params[2]
+            #folval['o'+ o] = o
+            #q0 = read_expr('be_in x.y')
+            #q1 = read_expr(params[1]+'(saturn)')
+            q1 = read_expr(params[1])
+            q2 = read_expr('planets('+params[2]+')')
+            q3 = read_expr('planets(saturn)')
+            expression = read_expr('love('+params[2]+', saturn)')
+            mc = nltk.MaceCommand(None, assumptions=[q1,q2,q3,expression])
+            mc.build_model()
+            q3 = read_expr('planets(testetst)')
+            mc.add_assumptions([q3])
+            mc.build_model()
+            print(mc.valuation)
+            print(mc.valuation['love'])
             #cleanup
+            #if params[1] not in folval:
+            #    folval.add(params[1], '')
+            #   #folval[params[1]] = {}
+            #    lhs = nltk.grammar.Nonterminal('PropN[-LOC,NUM=pl,SEM=<\P.P('+params[1]+')>]')
+            #    rhs = nltk.grammar.Nonterminal(params[1])
+            #    new_production = nltk.grammar.Production(lhs, [rhs])
+            #    rules = grammar.productions()
+            #    rules.append(new_production)
+           # 
            # if len(folval[params[1]]) == 1:
             #    if('',) in folval[params[1]]:
             #        folval[params[1]].clear()
-            folval[params[1]].add((o,))
-            if len(folval['be_in']) == 1:
-                if('',) in folval['be_in']:
-                    folval['be_in'].clear()
-            folval["be_in"].add((o, folval['favourite_'+params[1]]))
+            #folval[params[1]].add((o,))
+            #if len(folval['be_in']) == 1:
+            #    if('',) in folval['be_in']:
+            #        folval['be_in'].clear()
+            #folval["be_in"].add((o, folval[params[1]]))
             return confirmation_message
         # FOL - "What are my favourite *"
         elif cmd == 11:
             g = nltk.Assignment(folval.domain)
             m = nltk.Model(folval.domain, folval)
-            e = nltk.Expression.fromstring('be_in(x,' + 'favourite_'+params[1] + ')')
+            e = nltk.Expression.fromstring('be_in(x,' + params[1] + ')')
+            print(folval)
+            sent =  'planets ' + 'are_in ' + params[1]
+            testResult = nltk.evaluate_sents([sent], grammar_file, m, g)[0][0]
+            print(testResult)
             sat = m.satisfiers(e, "x", g)
             res = ''
             if len(sat) == 0:
@@ -250,7 +277,7 @@ def process_query(user_input):
             else:
                 for i in sat:
                     res += i + ', '
-                res[len(res-1)] = ''
+                res = res[:-2]
             return res
         elif cmd == 99:
             # If the user question doesnt match any of the above queries, check the similarity of the query

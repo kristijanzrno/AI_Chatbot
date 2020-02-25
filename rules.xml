@@ -222,7 +222,7 @@
   <template><srai>MY FAVOURITE <star index="1"/> IS <star index="2"/></srai></template></category>
 
 <category><pattern> ONE OF MY FAVOURITE * IS *</pattern>
-  <template>#7$<star index="1"/>$<star index="2"/></template></category>
+  <template>#7$favourite_<star index="1"/>$<star index="2"/></template></category>
 
 <category><pattern> ONE OF MY FAVOURITE * IN * IS *</pattern>
   <template>#8$<star index="1"/>$<star index="2"/>$<star index="3"/></template></category>
@@ -244,10 +244,10 @@
   <template>#10</template></category>
 
   <category><pattern> WHAT ARE MY FAVOURITE * </pattern>
-  <template>#11$<star index="1"/></template></category>
+  <template>#11$favourite_<star index="1"/></template></category>
 
   <category><pattern> WHAT ARE MY FAVOURITE * IN * </pattern>
-  <template>#12$<star index="1"/>$<star index="2"/></template></category>
+  <template>#12$favourite_<star index="1"/>$<star index="2"/></template></category>
 
   <category><pattern> SHOW ME PHOTO OF MY FAVOURITE * </pattern>
   <template>#12$<star index="1"/>$<star index="2"/></template></category>
