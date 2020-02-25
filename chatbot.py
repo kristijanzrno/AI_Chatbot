@@ -235,19 +235,22 @@ def process_query(user_input):
                 update_valuation(fav_str, True)
                 update_grammar(fav_str, False)
             add_knowledge(pos = params[1], a = o, b=None, obj = False, updating=False)
-            add_knowledge(pos ='be_in', a = o, b=fav_str, obj = False, updating=False)
-            print(folval)
+            add_knowledge(pos ='be_in', a = o, b=folval[fav_str], obj = False, updating=False)
+            #print(folval)
             return confirmation_message
         # FOL - "What are my favourite *"
         elif cmd == 11:
             g = nltk.Assignment(folval.domain)
             m = nltk.Model(folval.domain, folval)
-            e = nltk.Expression.fromstring('be_in(x,' + params[1] + ')')
+            fav_str = 'favourite_'+params[1]
+            e = nltk.Expression.fromstring("be_in(x," + fav_str + ")")
             print(folval)
-            sent =  'all ' + 'planets ' + 'are_in ' + params[1]
-            testResult = nltk.evaluate_sents([sent], grammar_file, m, g)[0][0]
-            print(testResult)
+            #sent =  'all ' + 'planets ' + 'are_in ' + 'favourite_'+params[1]
+            #testResult = nltk.evaluate_sents([sent], grammar_file, m, g)[0][0]
+            #print(testResult)
+            print(fav_str)
             sat = m.satisfiers(e, "x", g)
+            print(sat)
             res = ''
             if len(sat) == 0:
                  res = 'None'
