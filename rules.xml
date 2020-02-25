@@ -151,6 +151,79 @@
 <category><pattern> NASA * OF THE DAY AUTHOR </pattern>
   <template><srai>WHO IS THE NASA <star/> OF THE DAY AUTHOR</srai></template></category>
 
+
+<!--- First Order Logic queries -->
+<!--- Remembering User name & location in order to show 
+      more personalised messages, and enable the ability to 
+      show sunrise, sunset, moonrise and moonset without specifying location
+      each query -->
+<category><pattern> MY NAME IS * </pattern>
+  <template>#4$<star index="1"/></template></category>
+
+<category><pattern> I AM * </pattern>
+  <template><srai> MY NAME IS <star/></srai></template></category>
+
+<category><pattern> I LIVE IN * </pattern>
+  <template>#5$<star index="1"/></template></category>
+
+<category><pattern> MY LOCATION IS  * </pattern>
+  <template><srai> I LIVE IN  <star/></srai></template></category>
+
+
+<!--- Retrieving some of the FOL information -->
+<category><pattern> WHAT IS MY NAME </pattern>
+  <template>#9</template></category>
+
+  <category><pattern> WHAT'S MY NAME </pattern>
+  <template><srai> WHAT IS MY NAME <star/></srai></template></category>
+
+  <category><pattern> WHO AM I </pattern>
+  <template><srai> WHAT IS MY NAME <star/></srai></template></category>
+
+  <category><pattern> WHERE DO I LIVE </pattern>
+  <template>#10</template></category>
+
+  <category><pattern> WHAT ARE MY FAVOURITE * </pattern>
+  <template>#11$<star index="1"/></template></category>
+
+  <category><pattern> WHAT ARE MY FAVOURITE * IN * </pattern>
+  <template>#12$<star index="1"/>$<star index="2"/></template></category>
+
+  <category><pattern> WHAT IS MY FAVOURITE * </pattern>
+  <template>#13$<star index="1"/></template></category>
+
+  <category><pattern> ARE ALL FAVOURITE * IN * </pattern>
+  <template>#14$<star index="1"/>$<star index="2"/></template></category>
+
+  <category><pattern> ARE ANY FAVOURITE * IN * </pattern>
+  <template>#15$<star index="1"/>$<star index="2"/></template></category>
+
+  <category><pattern> SHOW ME A PHOTO OF MY FAVOURITE * </pattern>
+  <template>#16$<star index="1"/></template></category>
+
+  <category><pattern> SHOW ME A PHOTO OF ONE OF MY FAVOURITE * </pattern>
+  <template>#17$<star index="1"/></template></category>
+
+   <category><pattern> SHOW ME A PHOTO OF ONE OF MY FAVOURITE * IN * </pattern>
+  <template>#18$<star index="1"/>$<star index="2"/></template></category>
+
+<!--- Processing favourite planets, galaxies, etc.; and then more complex 
+      favourite objects in specific galaxies -->
+<category><pattern> MY FAVOURITE * IS * </pattern>
+  <template>#6$<star index="1"/>$<star index="2"/></template></category>
+
+<category><pattern> THE * I LOVE THE MOST IS * </pattern>
+  <template><srai>MY FAVOURITE <star index="1"/> IS <star index="2"/></srai></template></category>
+
+<category><pattern> ONE OF MY FAVOURITE * IS *</pattern>
+  <template>#7$<star index="1"/>$<star index="2"/></template></category>
+
+<category><pattern> ONE OF MY FAVOURITE * IN * IS *</pattern>
+  <template>#8$<star index="1"/>$<star index="2"/>$<star index="3"/></template></category>
+
+<category><pattern> ONE OF THE * IN * I LIKE IS * </pattern>
+  <template><srai>ONE OF MY FAVOURITE <star index="1"/> IN <star index="2"/> IS <star index="3"/></srai></template></category>
+
 <!--- Astrobin API, used for astrophotography search -->
 <!--- Considered using " SHOW AN * OF * " here, but decided not to
       because, unlike in the NASA PHOTO OF THE DAY SECTION, this query is less straightforward
@@ -196,73 +269,6 @@
 <category><pattern> * DOES * LOOK LIKE </pattern>
   <template><srai>SHOW ME AN IMAGE OF <star index = "2"/></srai></template></category>
 
-<!--- First Order Logic queries -->
-<!--- Remembering User name & location in order to show 
-      more personalised messages, and enable the ability to 
-      show sunrise, sunset, moonrise and moonset without specifying location
-      each query -->
-<category><pattern> MY NAME IS * </pattern>
-  <template>#4$<star index="1"/></template></category>
-
-<category><pattern> I AM * </pattern>
-  <template><srai> MY NAME IS <star/></srai></template></category>
-
-<category><pattern> I LIVE IN * </pattern>
-  <template>#5$<star index="1"/></template></category>
-
-<category><pattern> MY LOCATION IS  * </pattern>
-  <template><srai> I LIVE IN  <star/></srai></template></category>
-
-<!--- Processing favourite planets, galaxies, etc.; and then more complex 
-      favourite objects in specific galaxies -->
-<category><pattern> MY FAVOURITE * IS * </pattern>
-  <template>#6$<star index="1"/>$<star index="2"/></template></category>
-
-<category><pattern> THE * I LOVE THE MOST IS * </pattern>
-  <template><srai>MY FAVOURITE <star index="1"/> IS <star index="2"/></srai></template></category>
-
-<category><pattern> ONE OF MY FAVOURITE * IS *</pattern>
-  <template>#7$<star index="1"/>$<star index="2"/></template></category>
-
-<category><pattern> ONE OF MY FAVOURITE * IN * IS *</pattern>
-  <template>#8$<star index="1"/>$<star index="2"/>$<star index="3"/></template></category>
-
-<category><pattern> ONE OF THE * IN * I LIKE IS * </pattern>
-  <template><srai>ONE OF MY FAVOURITE <star index="1"/> IN <star index="2"/> IS <star index="3"/></srai></template></category>
-
-<!--- Retrieving some of the FOL information -->
-<category><pattern> WHAT IS MY NAME </pattern>
-  <template>#9</template></category>
-
-  <category><pattern> WHAT'S MY NAME </pattern>
-  <template><srai> WHAT IS MY NAME <star/></srai></template></category>
-
-  <category><pattern> WHO AM I </pattern>
-  <template><srai> WHAT IS MY NAME <star/></srai></template></category>
-
-  <category><pattern> WHERE DO I LIVE </pattern>
-  <template>#10</template></category>
-
-  <category><pattern> WHAT ARE MY FAVOURITE * </pattern>
-  <template>#11$<star index="1"/></template></category>
-
-  <category><pattern> WHAT ARE MY FAVOURITE * IN * </pattern>
-  <template>#12$<star index="1"/>$<star index="2"/></template></category>
-
-  <category><pattern> WHAT IS MY FAVOURITE * </pattern>
-  <template>#13$<star index="1"/></template></category>
-
-  <category><pattern> ARE ALL FAVOURITE * IN * </pattern>
-  <template>#14$<star index="1"/>$<star index="2"/></template></category>
-
-  <category><pattern> ARE ANY FAVOURITE * IN * </pattern>
-  <template>#15$<star index="1"/>$<star index="2"/></template></category>
-
-  <category><pattern> SHOW ME PHOTOS OF MY FAVOURITE * </pattern>
-  <template>#16$<star index="1"/>$<star index="2"/></template></category>
-
-  <category><pattern> SHOW ME PHOTOS OF MY FAVOURITE * IN * </pattern>
-  <template>#17$<star index="1"/>$<star index="2"/></template></category>
 
 <!-- Default reaction -->
 <category><pattern> * </pattern>

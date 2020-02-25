@@ -90,5 +90,5 @@ DTV[NUM=sg,SEM=<\Y X x.X(\z.Y(\y.give(x,y,z)))>,TNS=pres] -> 'gives'
 DTV[NUM=pl,SEM=<\Y X x.X(\z.Y(\y.give(x,y,z)))>,TNS=pres] -> 'give'
 
 P[+to] -> 'to'
-PropN[-LOC,NUM=pl,SEM=<\P.P(favourite_milky_planets)>] -> 'favourite_milky_planets'
-PropN[-LOC,NUM=pl,SEM=<\P.P(favourite_ad_planets)>] -> 'favourite_ad_planets'
+PropN[-LOC,NUM=pl,SEM=<\P.P(favourite_andromeda_stars)>] -> 'favourite_andromeda_stars'
+PropN[-LOC,NUM=pl,SEM=<\P.P(favourite_milky_stars)>] -> 'favourite_milky_stars'

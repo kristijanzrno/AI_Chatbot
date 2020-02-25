@@ -2,6 +2,7 @@ import os
 import aiml
 import nltk
 import string
+import random
 import json, requests
 from random import randrange
 from geopy.geocoders import Nominatim
@@ -201,6 +202,7 @@ def process_query(user_input):
     if answer[0] == '#':
         params = answer[1:].split('$')
         cmd = int(params[0])
+        print(answer)
         if cmd == 0:
             # Since the chatbot is web based, when the user types bye, it will only print a bye message and not quit
             # But this space is left for any future upgrades
@@ -256,13 +258,22 @@ def process_query(user_input):
         # FOL - Show a photo of my favourite *
         elif cmd == 16: 
             return find_astrophotography(search_term=get_singleton_value('most_favourite_'+params[1]))
-        # Show Photos of * in *
-        elif cmd == 17: 
-            #TODO
-            return get_singleton_value('most_favourite_'+params[1])
+        # Show photo of 1 of favourite *
+        elif cmd == 17:
+            try:
+                values = get_all_values('favourite_'+params[1])
+                val_arr = values.split(', ')
+                return find_astrophotography(search_term=random.choice(val_arr))
+            except:
+                return error_msg
         # FOL - SHOW ME A PHOTO OF ONE OF MY FAVOURITE * IN *
         elif cmd == 18:
-            return
+            try:
+                values = get_all_values('favourite_'+params[2]+'_'+params[1])
+                val_arr = values.split(', ')
+                return find_astrophotography(search_term=random.choice(val_arr))
+            except:
+                return error_msg 
         elif cmd == 99:
             # If the user question doesnt match any of the above queries, check the similarity of the query
             # with the questions loaded from 'data.txt' file; if any of them are matching enough (>0.8) 
@@ -452,7 +463,7 @@ def get_all_values(key):
         else:
             for i in sat:
                 res += i + ', '
-                res = res[:-2]
+        res = res[:-2]
         return res.capitalize()
     except:
         print(error_msg)
