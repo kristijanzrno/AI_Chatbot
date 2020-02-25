@@ -50,6 +50,12 @@ kernel = aiml.Kernel()
 kernel.setTextEncoding(None)
 kernel.bootstrap(learnFiles='rules.xml')
 
+# Initializing FOL agent
+v = """ planets => {} glaxies => {} stars => {} nebulaes => {} moons => {} field1 => f1 field2 => f2 field3 => f3 field4 => f4 be_in => {} """
+folval = nltk.Valuation.fromstring(v) 
+grammar_file = 'simple-sem.fcfg' 
+objectCounter = 0
+
 # Image Clasiffication Question order resembling the GalaxyZoo flowchart
 # There are 11 questions and 37 answers in total (37 classes)
 # Defining 11 Questions
@@ -186,6 +192,24 @@ def process_query(user_input):
         elif cmd == 3:
             # When parsed aiml respone starts with #2, it means that the user is searching for astrophotography photos
             return find_astrophotography(search_term=params[1])
+        elif cmd == 4:
+            return
+        # FOL - "My favourite * is * "
+        elif cmd == 5: 
+             o = 'o' + str(objectCounter)
+            objectCounter +=1
+            folval['o' + o] = o
+            #cleanup
+            if len(folval[params[1]]) == 1:
+                if('',) in folval[params[1]]:
+                    folval[params[1]].clear()
+            if len(folval["be_in"]) == 1:
+                if('',) in folval["be_in"]:
+                    folval["be_in"].clear()
+            folval["be_in"].add((o, folval[params[2]]))
+            return
+        elif cmd == 10:
+            return
         elif cmd == 99:
             # If the user question doesnt match any of the above queries, check the similarity of the query
             # with the questions loaded from 'data.txt' file; if any of them are matching enough (>0.8) 
