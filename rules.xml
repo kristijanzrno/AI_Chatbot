@@ -249,13 +249,11 @@
   <category><pattern> WHAT ARE MY FAVOURITE * IN * </pattern>
   <template>#12$<star index="1"/>$<star index="2"/></template></category>
 
-  <category><pattern> SHOW ME PHOTO OF MY FAVOURITE * </pattern>
-  <template>#12$<star index="1"/>$<star index="2"/></template></category>
-
-  <category><pattern> SHOW ME PHOTOS OF MY FAVOURITE * IN * </pattern>
+  <category><pattern> SHOW ME PHOTOS OF MY FAVOURITE * </pattern>
   <template>#13$<star index="1"/>$<star index="2"/></template></category>
 
-
+  <category><pattern> SHOW ME PHOTOS OF MY FAVOURITE * IN * </pattern>
+  <template>#14$<star index="1"/>$<star index="2"/></template></category>
 
 <!-- Default reaction -->
 <category><pattern> * </pattern>

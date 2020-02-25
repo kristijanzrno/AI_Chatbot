@@ -90,5 +90,5 @@ DTV[NUM=sg,SEM=<\Y X x.X(\z.Y(\y.give(x,y,z)))>,TNS=pres] -> 'gives'
 DTV[NUM=pl,SEM=<\Y X x.X(\z.Y(\y.give(x,y,z)))>,TNS=pres] -> 'give'
 
 P[+to] -> 'to'
-N[NUM=pl,SEM=<\x.persons(x)>] -> 'persons'
-PropN[-LOC,NUM=pl,SEM=<\P.P(favourite_persons)>] -> 'favourite_persons'
+N[NUM=pl,SEM=<\x.coffees(x)>] -> 'coffees'
+PropN[-LOC,NUM=pl,SEM=<\P.P(favourite_coffees)>] -> 'favourite_coffees'

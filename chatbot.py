@@ -186,6 +186,7 @@ def check_similarity(user_input):
 
 # User query processing function
 def process_query(user_input):
+    global oc
     # Preprocessing the user input to remove punctuation
     user_input.translate(str.maketrans('', '', string.punctuation))
     # Check if an image has been uploaded for classification
@@ -216,49 +217,37 @@ def process_query(user_input):
         elif cmd == 3:
             # When parsed aiml respone starts with #2, it means that the user is searching for astrophotography photos
             return find_astrophotography(search_term=params[1])
+        # FOL - Storing Name   
         elif cmd == 4:
-            return
+            return add_knowledge(pos='name', a=params[1], b=None, obj=True, updating=False)
+        # FOL - Storing location   
+        elif cmd == 5:
+            return add_knowledge(pos='location', a=params[1], b=None, obj=True, updating=False)
         # FOL - "My favourite * is * "
         elif cmd == 6: 
 
             return 
         # ONE OF MY FAVOURITE * IS *
         elif cmd == 7: 
-            global oc
-            o = params[2]
-            add_knowledge(pos=o, a='o'+str(oc), b=None, obj=True, updating=False)
-            fav_str = 'favourite_'+params[1]
-            if params[1] not in folval:
-                update_valuation(params[1], False)
-                update_grammar(params[1], True)
-            if fav_str not in folval:
-                update_valuation(fav_str, True)
-                update_grammar(fav_str, False)
-            add_knowledge(pos = params[1], a = o, b=None, obj = False, updating=False)
-            add_knowledge(pos ='be_in', a = o, b=folval[fav_str], obj = False, updating=False)
-            #print(folval)
-            return confirmation_message
+                return add_connected(params[2], params[1], 'favourite_'+params[1])
+        elif cmd == 8: 
+
+            return 
+        # What is my name
+        elif cmd == 9: 
+            return get_singleton_value('name').capitalize()
+        # My location
+        elif cmd == 10: 
+            return get_singleton_value('location').capitalize()
         # FOL - "What are my favourite *"
         elif cmd == 11:
-            g = nltk.Assignment(folval.domain)
-            m = nltk.Model(folval.domain, folval)
             fav_str = 'favourite_'+params[1]
-            e = nltk.Expression.fromstring("be_in(x," + fav_str + ")")
-            print(folval)
-            #sent =  'all ' + 'planets ' + 'are_in ' + 'favourite_'+params[1]
-            #testResult = nltk.evaluate_sents([sent], grammar_file, m, g)[0][0]
-            #print(testResult)
-            print(fav_str)
-            sat = m.satisfiers(e, "x", g)
-            print(sat)
-            res = ''
-            if len(sat) == 0:
-                 res = 'None'
-            else:
-                for i in sat:
-                    res += i + ', '
-                res = res[:-2]
-            return res
+            res = get_all_values(fav_str)
+            return res.capitalize()
+        #  WHAT ARE MY FAVOURITE * IN *
+        elif cmd == 12: 
+            return ''
+
         elif cmd == 99:
             # If the user question doesnt match any of the above queries, check the similarity of the query
             # with the questions loaded from 'data.txt' file; if any of them are matching enough (>0.8) 
@@ -403,6 +392,10 @@ def classification_answer(data, response, question_number):
     response = classification_questions[question_number] + '<br> - ' + classification_answers[answer_index] + '<br>' + response 
     return response
 
+    
+############################################################################
+# FOL Functions
+############################################################################
 
 def update_valuation(word, field):
     global v, folval, fc
@@ -427,26 +420,68 @@ def update_grammar(word, num):
     with open(grammar_file, 'a') as f:
         f.write('\n'+str(new_production))
 
+def get_singleton_value(key):
+    if folval[key]:
+        return folval[key]
+    return error_msg
+
+def get_all_values(key):
+    try:
+        g = nltk.Assignment(folval.domain)
+        m = nltk.Model(folval.domain, folval)
+        e = nltk.Expression.fromstring("be_in(x," + key + ")")
+        sat = m.satisfiers(e, "x", g)
+        res = ''
+        if len(sat) == 0:
+            res = 'None'
+        else:
+            for i in sat:
+                res += i + ', '
+                res = res[:-2]
+        return res
+    except:
+        print(error_msg)
+
+def add_connected(obj, obj_cont, cont):
+    try:
+        add_knowledge(pos=obj, a='o'+str(oc), b=None, obj=True, updating=False)
+        if obj_cont not in folval:
+            update_valuation(obj_cont, False)
+            update_grammar(obj_cont, True)
+        if cont not in folval:
+            update_valuation(cont, True)
+            update_grammar(cont, False)
+        add_knowledge(pos = obj_cont, a = obj, b=None, obj = False, updating=False)
+        add_knowledge(pos ='be_in', a = obj, b=folval[cont], obj = False, updating=False)
+        return confirmation_message
+    except:
+        return error_msg
+    
 def clean_object(pos):
-    if len(folval[pos]) == 1:
-        if('',) in folval[pos]:
-            folval[pos].clear()
+    try:
+        if len(folval[pos]) == 1:
+            if('',) in folval[pos]:
+                folval[pos].clear()
+    except:
+        print(error_msg)
 
 def add_knowledge(pos, a, b, obj, updating):
-    global v, folval, oc
-    if obj:
-        folval[pos] = a
-        oc+=1
-    else:
-        clean_object(pos)
-        if b == None:
-            folval[pos].add((a))
+    try:
+        global v, folval, oc
+        if obj:
+            folval[pos] = a
+            oc+=1
         else:
-            folval[pos].add((a,b)) 
-
-    if not updating:
-        val_assumptions.append((pos, a, b, obj))
-
+            clean_object(pos)
+            if b == None:
+                folval[pos].add((a))
+            else:
+                folval[pos].add((a,b)) 
+        if not updating:
+            val_assumptions.append((pos, a, b, obj))
+        return confirmation_message
+    except:
+        return error_msg
 
 if __name__ == '__main__':
     # Load the data from the text file and start the flask website
