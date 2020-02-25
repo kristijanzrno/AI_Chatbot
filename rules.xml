@@ -221,15 +221,18 @@
 <category><pattern> THE * I LOVE THE MOST IS * </pattern>
   <template><srai>MY FAVOURITE <star index="1"/> IS <star index="2"/></srai></template></category>
 
+<category><pattern> ONE OF MY FAVOURITE * IS *</pattern>
+  <template>#7$<star index="1"/>$<star index="2"/></template></category>
+
 <category><pattern> ONE OF MY FAVOURITE * IN * IS *</pattern>
-  <template>#7$<star index="1"/>$<star index="2"/>$<star index="3"/></template></category>
+  <template>#8$<star index="1"/>$<star index="2"/>$<star index="3"/></template></category>
 
 <category><pattern> ONE OF THE * IN * I LIKE IS * </pattern>
   <template><srai>ONE OF MY FAVOURITE <star index="1"/> IN <star index="2"/> IS <star index="3"/></srai></template></category>
 
 <!--- Retrieving some of the FOL information -->
 <category><pattern> WHAT IS MY NAME </pattern>
-  <template>#8</template></category>
+  <template>#9</template></category>
 
   <category><pattern> WHAT'S MY NAME </pattern>
   <template><srai> WHAT IS MY NAME <star/></srai></template></category>
@@ -238,19 +241,19 @@
   <template><srai> WHAT IS MY NAME <star/></srai></template></category>
 
   <category><pattern> WHERE DO I LIVE </pattern>
-  <template>#9</template></category>
+  <template>#10</template></category>
 
   <category><pattern> WHAT ARE MY FAVOURITE * </pattern>
-  <template>#10$<star index="1"/></template></category>
+  <template>#11$<star index="1"/></template></category>
 
   <category><pattern> WHAT ARE MY FAVOURITE * IN * </pattern>
-  <template>#11$<star index="1"/>$<star index="2"/><</template></category>
+  <template>#12$<star index="1"/>$<star index="2"/></template></category>
 
   <category><pattern> SHOW ME PHOTO OF MY FAVOURITE * </pattern>
-  <template>#12$<star index="1"/>$<star index="2"/><</template></category>
+  <template>#12$<star index="1"/>$<star index="2"/></template></category>
 
   <category><pattern> SHOW ME PHOTOS OF MY FAVOURITE * IN * </pattern>
-  <template>#13$<star index="1"/>$<star index="2"/><</template></category>
+  <template>#13$<star index="1"/>$<star index="2"/></template></category>
 
 
 

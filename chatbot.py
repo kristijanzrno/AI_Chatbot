@@ -51,7 +51,15 @@ kernel.setTextEncoding(None)
 kernel.bootstrap(learnFiles='rules.xml')
 
 # Initializing FOL agent
-v = """ planets => {} glaxies => {} stars => {} nebulaes => {} moons => {} field1 => f1 field2 => f2 field3 => f3 field4 => f4 be_in => {} """
+v = """
+planets => {}
+favourite_galaxies => fg
+favourite_planets => fp
+favourite_nebulaes => fn
+favourite_stars => fs
+favourite_moons => fm
+be_in => {} """
+# v = """ planets => {} galaxies => {} stars => {} nebulaes => {} moons => {} favourite galaxies => fg field2 => f2 field3 => f3 field4 => f4 be_in => {} """
 folval = nltk.Valuation.fromstring(v) 
 grammar_file = 'simple-sem.fcfg' 
 objectCounter = 0
@@ -82,6 +90,9 @@ classification_answer_ranges = [[0,3], [3,5], [5,7], [7,9], [9,13], [13,15], [15
 # Format: AnswerNo [index] = NextQuestionNo
 # NextQuestionNo = -1 marks the stop point
 next_question = [7, 2, -1, 9, 3, 4, 4, 10, 5, 6, 6, 6, 6, 8, -1, 6, 6, 6, -1, -1, -1, -1, -1, -1, -1, 6, 6, 6, 11, 11, 11, 5, 5, 5, 5, 5, 5]
+
+# Confirmation message
+confirmation_message = 'I will note that.'
 
 # Flask route that handles the initial '/' request that loads the index webpage
 @app.route('/')
@@ -172,6 +183,7 @@ def process_query(user_input):
     response_agent = 'aiml'
     if response_agent == 'aiml':
         answer = kernel.respond(user_input)
+    print(answer)
     # Post-process the answer for commands
     if answer[0] == '#':
         params = answer[1:].split('$')
@@ -195,21 +207,51 @@ def process_query(user_input):
         elif cmd == 4:
             return
         # FOL - "My favourite * is * "
-        elif cmd == 5: 
-             o = 'o' + str(objectCounter)
+        elif cmd == 6: 
+            objectCounter = 0
+            o = 'o' + str(objectCounter)
             objectCounter +=1
             folval['o' + o] = o
             #cleanup
             if len(folval[params[1]]) == 1:
                 if('',) in folval[params[1]]:
                     folval[params[1]].clear()
-            if len(folval["be_in"]) == 1:
-                if('',) in folval["be_in"]:
-                    folval["be_in"].clear()
-            folval["be_in"].add((o, folval[params[2]]))
-            return
-        elif cmd == 10:
-            return
+            folval[params[1]].add((o,))
+            if len(folval['be_in']) == 1:
+                if('',) in folval['be_in']:
+                    folval['be_in'].clear()
+            folval["be_in"].add((o, folval['favourite_'+params[1]]))
+            return 
+        # ONE OF MY FAVOURITE * IS *
+        elif cmd == 7: 
+           # objectCounter = 0
+            o = params[2]
+            #objectCounter +=1
+            folval[o] = o
+            #cleanup
+           # if len(folval[params[1]]) == 1:
+            #    if('',) in folval[params[1]]:
+            #        folval[params[1]].clear()
+            folval[params[1]].add((o,))
+            if len(folval['be_in']) == 1:
+                if('',) in folval['be_in']:
+                    folval['be_in'].clear()
+            folval["be_in"].add((o, folval['favourite_'+params[1]]))
+            return confirmation_message
+        # FOL - "What are my favourite *"
+        elif cmd == 11:
+            g = nltk.Assignment(folval.domain)
+            m = nltk.Model(folval.domain, folval)
+            e = nltk.Expression.fromstring('be_in(x,' + 'favourite_'+params[1] + ')')
+            sat = m.satisfiers(e, "x", g)
+            res = ''
+            if len(sat) == 0:
+                 res = 'None'
+            else:
+                for i in sat:
+                    res += i + ', '
+                res[len(res-1)] = ''
+            return res
         elif cmd == 99:
             # If the user question doesnt match any of the above queries, check the similarity of the query
             # with the questions loaded from 'data.txt' file; if any of them are matching enough (>0.8) 
