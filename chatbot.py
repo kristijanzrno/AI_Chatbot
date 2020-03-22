@@ -4,6 +4,8 @@ import nltk
 import string
 import random
 import json, requests
+import numpy as np
+import wikipedia
 from random import randrange
 from geopy.geocoders import Nominatim
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -13,7 +15,6 @@ from werkzeug.utils import secure_filename
 from keras.models import load_model
 from PIL import Image
 from skimage import transform
-import numpy as np
 from shutil import copyfile
 from keras.preprocessing.image import ImageDataGenerator
 
@@ -286,7 +287,7 @@ def process_query(user_input):
             # return the answer to it
             result = check_similarity(user_input)
             if result == error_msg:
-                
+                return find_answer(user_input)
             return result
     else:
         return answer
@@ -567,14 +568,24 @@ def check_condition(items, cont, quantity):
         return 'No.'
 
 ############################################################################
-# Finding 
+# Finding answers using sequence-to-sequence encoder-decoder QA system
 ############################################################################
 
+def find_answer(question):
+    corpus = find_corpus(question)
+    summary = get_summary(corpus[0])
+    return extract_answer(question, summary) 
+
 def find_corpus(question):
-    return extract_answer(question, "")
+    articles = wikipedia.search(question)
+    return articles
+
+def get_summary(title, noOfSentences):
+    return wikipedia.summary(title, sentences=noOfSentences)
 
 def extract_answer(question, paragraph):
-    return ""
+    return paragraph
+    #return ""
 
 if __name__ == '__main__':
     # Load the data from the text file and start the flask website
@@ -586,4 +597,5 @@ if __name__ == '__main__':
     # Loading the Encoder-Decoder sequence to sequence QA system model
     encoder_model = load_model('encoder_model.h5')
     decoder_model = load_model('decoder_model.h5')
+    # Run the flask app
     app.run()
