@@ -22,6 +22,7 @@ from keras.preprocessing.image import ImageDataGenerator
 
 # Uncomment on first use to download the library
 # nltk.download('wordnet')
+# nltk.download('punkt')
 
 # IP-GEOLOCATION API used to fetch sunset, sunrise, moonset and moonrise for a specific location
 ipgelocation_api_key = '064b4149765b496eb89050790ff10c68'
@@ -251,6 +252,7 @@ def process_query(user_input):
             return get_singleton_value('most_favourite_'+params[1])
         # FOL - Are all favourite * in *
         elif cmd == 14: 
+            print('here')
             return check_condition(params[1], 'favourite_'+params[2]+'_'+params[1], 'all')
         # FOL - Are any favourite * in *
         elif cmd == 15: 
@@ -282,7 +284,10 @@ def process_query(user_input):
             # If the user question doesnt match any of the above queries, check the similarity of the query
             # with the questions loaded from 'data.txt' file; if any of them are matching enough (>0.8) 
             # return the answer to it
-            return check_similarity(user_input)
+            result = check_similarity(user_input)
+            if result == error_msg:
+                
+            return result
     else:
         return answer
 
@@ -451,7 +456,7 @@ def update_valuation(word, field):
 
 # Updating the grammar file with new rules needed for chatbot functionality
 def update_grammar(word, num):
-    global grammar_data, grammar
+    #global grammar_data, grammar
     # Manually creating the definition on the left side
     if num:
         lhs = nltk.grammar.Nonterminal(r'N[NUM=pl,SEM=<\x.'+word+'(x)>]')
@@ -551,18 +556,25 @@ def add_knowledge(pos, a, b, obj, updating):
 
 # Checking the relationships between different objects
 def check_condition(items, cont, quantity):
-    try:
-        g = nltk.Assignment(folval.domain)
-        m = nltk.Model(folval.domain, folval)
-        # Checking if a field has all/any(some) items in it
-        sent = quantity+' ' + items + ' are_in ' + cont
-        results = nltk.evaluate_sents([sent], grammar_file, m, g)[0][0]
-        if results[2]:
-            return 'Yes.'
-        else: 
-            return 'No.'
-    except:
-        return error_msg
+    g = nltk.Assignment(folval.domain)
+    m = nltk.Model(folval.domain, folval)
+    # Checking if a field has all/any(some) items in it
+    sent = quantity+' ' + items + ' are_in ' + cont
+    results = nltk.evaluate_sents([sent], grammar_file, m, g)[0][0]
+    if results[2]:
+        return 'Yes.'
+    else: 
+        return 'No.'
+
+############################################################################
+# Finding 
+############################################################################
+
+def find_corpus(question):
+    return extract_answer(question, "")
+
+def extract_answer(question, paragraph):
+    return ""
 
 if __name__ == '__main__':
     # Load the data from the text file and start the flask website
@@ -571,4 +583,7 @@ if __name__ == '__main__':
     load_data()
     # Loading the trained model based on the vgg-16 architecture
     model = load_model('trained_model.h5')
+    # Loading the Encoder-Decoder sequence to sequence QA system model
+    encoder_model = load_model('encoder_model.h5')
+    decoder_model = load_model('decoder_model.h5')
     app.run()

@@ -67,7 +67,4 @@ DTV[NUM=pl,SEM=<\Y X x.X(\z.Y(\y.give(x,y,z)))>,TNS=pres] -> 'give'
 
 P[+to] -> 'to'
 
-##
-## Note that the chatbot is made to add new rules to the file while running
-##
 
