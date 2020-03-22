@@ -12,7 +12,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
-from keras.models import load_model
+from tensorflow.keras.models import load_model
 from PIL import Image
 from skimage import transform
 from shutil import copyfile
@@ -593,9 +593,9 @@ if __name__ == '__main__':
     # Please enter that link to interact with the chatbot 
     load_data()
     # Loading the trained model based on the vgg-16 architecture
-    model = load_model('trained_model.h5')
+    #model = load_model('trained_model.h5')
     # Loading the Encoder-Decoder sequence to sequence QA system model
     encoder_model = load_model('encoder_model.h5')
-    decoder_model = load_model('decoder_model.h5')
+    #decoder_model = load_model('decoder_model.h5')
     # Run the flask app
     app.run()
