@@ -576,87 +576,8 @@ def check_condition(items, cont, quantity):
         return 'No.'
 
 ############################################################################
-# Finding answers using sequence-to-sequence encoder-decoder QA system
+# Finding answers using transformer model QA system
 ############################################################################
-
-def find_answer(question):
-    corpus = find_corpus(question)
-    summary = get_summary(corpus[0], 2)
-    print(summary)
-    return extract_answer(question, summary) 
-
-def find_corpus(question):
-    articles = wikipedia.search(question)
-    return articles
-
-def get_summary(title, noOfSentences):
-    return wikipedia.summary(title, sentences=noOfSentences)
-
-lookup = 'abcdefghijklmnopqrstuvwxyz1234567890?.,'
-# check for valid characters
-def in_white_list(_word):
-    valid_word = False
-    for char in _word:
-        if char in lookup:
-            valid_word = True
-            break
-
-    if valid_word is False:
-        return False
-
-    return True
-
-def extract_answer(question, paragraph):
-    input_paragraph_seq = []
-    input_question_seq = []
-    input_paragraph_wid_list = []
-    input_question_wid_list = []
-    input_paragraph_text = paragraph.lower()
-    input_question_text = question.lower()
-    for word in nltk.word_tokenize(input_paragraph_text):
-        if not in_white_list(word):
-            continue
-        idx = 1  # default [UNK]
-        if word in input_paragraph_word2idx:
-            idx = input_paragraph_word2idx[word]
-        input_paragraph_wid_list.append(idx)
-    for word in nltk.word_tokenize(input_question_text):
-        if not in_white_list(word):
-            continue
-            idx = 1  # default [UNK]
-        if word in input_question_word2idx:
-            idx = input_question_word2idx[word]
-        input_question_wid_list.append(idx)
-    input_paragraph_seq.append(input_paragraph_wid_list)
-    input_question_seq.append(input_question_wid_list)
-
-    input_paragraph_seq = pad_sequences(input_paragraph_seq, input_paragraph_max_seq_length)
-    input_question_seq = pad_sequences(input_question_seq, input_question_max_seq_length)
-    states_value = encoder_model.predict([input_paragraph_seq, input_question_seq])
-
-    target_seq = np.zeros((1, 1, num_target_tokens))
-    target_seq[0, 0, target_word2idx['START']] = 1
-    target_text = ''
-    target_text_len = 0
-    terminated = False
-    while not terminated:
-        output_tokens, h, c = decoder_model.predict([target_seq] + states_value)
-
-        sample_token_idx = np.argmax(output_tokens[0, -1, :])
-        sample_word = target_idx2word[sample_token_idx]
-        target_text_len += 1
-
-        if sample_word != 'START' and sample_word != 'END':
-            target_text += ' ' + sample_word
-
-        if sample_word == 'END' or target_text_len >= target_max_seq_length:
-            terminated = True
-
-        target_seq = np.zeros((1, 1, num_target_tokens))
-        target_seq[0, 0, sample_token_idx] = 1
-
-        states_value = [h, c]
-    return target_text.strip()
 
 if __name__ == '__main__':
     # Load the data from the text file and start the flask website
@@ -665,21 +586,5 @@ if __name__ == '__main__':
     load_data()
     # Loading the trained model based on the vgg-16 architecture
     #model = load_model('trained_model.h5')
-    # Loading the Encoder-Decoder sequence to sequence QA system model
-    encoder_model = load_model('encoder_model.h5', compile=False)
-    decoder_model = load_model('decoder_model.h5', compile=False)
-
-
-    with open('input_paragraph_word2idx.json') as f:
-        input_paragraph_word2idx = {str(k):int(v) for k,v in json.load(f).items()}
-    with open('input_question_word2idx.json') as f:
-        input_question_word2idx = {str(k):int(v) for k,v in json.load(f).items()}
-    with open('target_idx2word.json') as f:
-        target_idx2word = {int(k):str(v) for k,v in json.load(f).items()}
-    with open('target_word2idx.json') as f:
-        target_word2idx = {str(k):int(v) for k,v in json.load(f).items()}  
-    #input_question_word2idx = json.loads('input_question_word2idx.json')
-    #target_idx2word = json.loads('target_idx2word.json')
-    print(target_idx2word)
     # Run the flask app
     app.run()
