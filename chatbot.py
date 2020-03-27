@@ -12,11 +12,13 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
-from tensorflow.keras.models import load_model
 from PIL import Image
 from skimage import transform
 from shutil import copyfile
 from keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 # Important Note; The console will output the link where the Chatbot can be accessed in (Usually: http://127.0.0.1:5000/)
 # Please enter that link to interact with the chatbot 
@@ -93,7 +95,7 @@ classification_questions=[
     'Does the galaxy have a buldge at its centre? If so, what shape?',
     'How tightly wound do the spiral arms appear?',
     'How many spiral arms are there?']
-#Defining 37 answers (classes)
+# Defining 37 answers (classes)
 classification_answers=['Smooth', 'Features or disk', 'Star of artifact', 'Yes', 'No', 'Yes', 'No', 'Yes', 'No', 
     'No bulge', 'Just noticable', 'Obvious', 'Dominant', 'Yes', 'No', 'Completely round', 'In between', 'Cigar-shaped',
     'Ring', 'Lens or arc', 'Disturbed', 'Irregular', 'Other', 'Merger', 'Dust lane', 'Rounded', 'Boxy', 'No bulge', 'Tight',
@@ -107,6 +109,12 @@ next_question = [7, 2, -1, 9, 3, 4, 4, 10, 5, 6, 6, 6, 6, 8, -1, 6, 6, 6, -1, -1
 
 # Confirmation message
 confirmation_message = 'I will note that.'
+
+# Sequence to Sequence network constants
+input_paragraph_max_seq_length = 298
+input_question_max_seq_length = 32
+num_target_tokens = 3227
+target_max_seq_length = 36
 
 # Flask route that handles the initial '/' request that loads the index webpage
 @app.route('/')
@@ -573,7 +581,8 @@ def check_condition(items, cont, quantity):
 
 def find_answer(question):
     corpus = find_corpus(question)
-    summary = get_summary(corpus[0])
+    summary = get_summary(corpus[0], 2)
+    print(summary)
     return extract_answer(question, summary) 
 
 def find_corpus(question):
@@ -583,9 +592,71 @@ def find_corpus(question):
 def get_summary(title, noOfSentences):
     return wikipedia.summary(title, sentences=noOfSentences)
 
+lookup = 'abcdefghijklmnopqrstuvwxyz1234567890?.,'
+# check for valid characters
+def in_white_list(_word):
+    valid_word = False
+    for char in _word:
+        if char in lookup:
+            valid_word = True
+            break
+
+    if valid_word is False:
+        return False
+
+    return True
+
 def extract_answer(question, paragraph):
-    return paragraph
-    #return ""
+    input_paragraph_seq = []
+    input_question_seq = []
+    input_paragraph_wid_list = []
+    input_question_wid_list = []
+    input_paragraph_text = paragraph.lower()
+    input_question_text = question.lower()
+    for word in nltk.word_tokenize(input_paragraph_text):
+        if not in_white_list(word):
+            continue
+        idx = 1  # default [UNK]
+        if word in input_paragraph_word2idx:
+            idx = input_paragraph_word2idx[word]
+        input_paragraph_wid_list.append(idx)
+    for word in nltk.word_tokenize(input_question_text):
+        if not in_white_list(word):
+            continue
+            idx = 1  # default [UNK]
+        if word in input_question_word2idx:
+            idx = input_question_word2idx[word]
+        input_question_wid_list.append(idx)
+    input_paragraph_seq.append(input_paragraph_wid_list)
+    input_question_seq.append(input_question_wid_list)
+
+    input_paragraph_seq = pad_sequences(input_paragraph_seq, input_paragraph_max_seq_length)
+    input_question_seq = pad_sequences(input_question_seq, input_question_max_seq_length)
+    states_value = encoder_model.predict([input_paragraph_seq, input_question_seq])
+
+    target_seq = np.zeros((1, 1, num_target_tokens))
+    target_seq[0, 0, target_word2idx['START']] = 1
+    target_text = ''
+    target_text_len = 0
+    terminated = False
+    while not terminated:
+        output_tokens, h, c = decoder_model.predict([target_seq] + states_value)
+
+        sample_token_idx = np.argmax(output_tokens[0, -1, :])
+        sample_word = target_idx2word[sample_token_idx]
+        target_text_len += 1
+
+        if sample_word != 'START' and sample_word != 'END':
+            target_text += ' ' + sample_word
+
+        if sample_word == 'END' or target_text_len >= target_max_seq_length:
+            terminated = True
+
+        target_seq = np.zeros((1, 1, num_target_tokens))
+        target_seq[0, 0, sample_token_idx] = 1
+
+        states_value = [h, c]
+    return target_text.strip()
 
 if __name__ == '__main__':
     # Load the data from the text file and start the flask website
@@ -595,7 +666,20 @@ if __name__ == '__main__':
     # Loading the trained model based on the vgg-16 architecture
     #model = load_model('trained_model.h5')
     # Loading the Encoder-Decoder sequence to sequence QA system model
-    encoder_model = load_model('encoder_model.h5')
-    #decoder_model = load_model('decoder_model.h5')
+    encoder_model = load_model('encoder_model.h5', compile=False)
+    decoder_model = load_model('decoder_model.h5', compile=False)
+
+
+    with open('input_paragraph_word2idx.json') as f:
+        input_paragraph_word2idx = {str(k):int(v) for k,v in json.load(f).items()}
+    with open('input_question_word2idx.json') as f:
+        input_question_word2idx = {str(k):int(v) for k,v in json.load(f).items()}
+    with open('target_idx2word.json') as f:
+        target_idx2word = {int(k):str(v) for k,v in json.load(f).items()}
+    with open('target_word2idx.json') as f:
+        target_word2idx = {str(k):int(v) for k,v in json.load(f).items()}  
+    #input_question_word2idx = json.loads('input_question_word2idx.json')
+    #target_idx2word = json.loads('target_idx2word.json')
+    print(target_idx2word)
     # Run the flask app
     app.run()
