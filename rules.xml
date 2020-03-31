@@ -270,6 +270,10 @@
   <template><srai>SHOW ME AN IMAGE OF <star index = "2"/></srai></template></category>
 
 
+
+<category><pattern> TALK IN TBBT MODE </pattern>
+  <template>#90</template></category>
+
 <!-- Default reaction -->
 <category><pattern> * </pattern>
   <template>#99$<star index="1"/></template></category>

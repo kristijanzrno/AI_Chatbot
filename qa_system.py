@@ -56,7 +56,7 @@ class QA_System:
         return sentence
     
     def evaluate(self, sentence):
-        sentence = preprocess_sentence(sentence)
+        sentence = self.preprocess_sentence(sentence)
 
         sentence = tf.expand_dims(
             self.START_TOKEN + self.tokenizer.encode(sentence) + self.END_TOKEN, axis=0)
@@ -64,7 +64,7 @@ class QA_System:
         output = tf.expand_dims(self.START_TOKEN, 0)
 
         for i in range(self.MAX_LENGTH):
-            predictions = model(inputs=[sentence, output], training=False)
+            predictions = self.model(inputs=[sentence, output], training=False)
 
             # select the last word from the seq_len dimension
             predictions = predictions[:, -1:, :]
@@ -82,7 +82,7 @@ class QA_System:
 
 
     def predict(self, sentence):
-        prediction = evaluate(sentence)
+        prediction = self.evaluate(sentence)
         predicted_sentence = self.tokenizer.decode(
             [i for i in prediction if i < self.tokenizer.vocab_size])
         return predicted_sentence

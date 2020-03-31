@@ -197,7 +197,13 @@ def check_similarity(user_input):
 
 # User query processing function
 def process_query(user_input):
-    global oc
+    global oc, tbbt
+    if tbbt:
+        if user_input == 'EXIT':
+            tbbt = False
+        else:
+            return qa_sys.predict(user_input)
+        return
     # Preprocessing the user input to remove punctuation
     user_input.translate(str.maketrans('', '', string.punctuation))
     # Check if an image has been uploaded for classification
@@ -212,7 +218,6 @@ def process_query(user_input):
     if answer[0] == '#':
         params = answer[1:].split('$')
         cmd = int(params[0])
-        print(answer)
         if cmd == 0:
             # Since the chatbot is web based, when the user types bye, it will only print a bye message and not quit
             # But this space is left for any future upgrades
@@ -289,6 +294,10 @@ def process_query(user_input):
                 return find_astrophotography(search_term=random.choice(val_arr))
             except:
                 return error_msg 
+        elif cmd == 90:
+            tbbt = True
+            return 'Now talking in the TBBT mode; Type EXIT to stop.'
+
         elif cmd == 99:
             # If the user question doesnt match any of the above queries, check the similarity of the query
             # with the questions loaded from 'data.txt' file; if any of them are matching enough (>0.8) 
