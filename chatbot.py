@@ -201,9 +201,9 @@ def process_query(user_input):
     if tbbt:
         if user_input == 'EXIT':
             tbbt = False
+            return 'Bye!'
         else:
             return qa_sys.predict(user_input)
-        return
     # Preprocessing the user input to remove punctuation
     user_input.translate(str.maketrans('', '', string.punctuation))
     # Check if an image has been uploaded for classification
@@ -302,11 +302,7 @@ def process_query(user_input):
             # If the user question doesnt match any of the above queries, check the similarity of the query
             # with the questions loaded from 'data.txt' file; if any of them are matching enough (>0.8) 
             # return the answer to it
-            result = check_similarity(user_input)
-            if result == error_msg:
-                return find_answer(user_input)
-            return result
-    else:
+            return check_similarity(user_input)
         return answer
 
 # Function created to fetch json data

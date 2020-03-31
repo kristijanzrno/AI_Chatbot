@@ -54,6 +54,19 @@ class QA_System:
         sentence = sentence.strip()
         # adding a start and an end token to the sentence
         return sentence
+
+    
+    def postprocess_sentence(self, sentence):
+        sentence = sentence.replace("`` ", '"').replace(" ''", '"').replace('. . .',  '...')
+        sentence = sentence.replace(" ( ", " (").replace(" ) ", ") ")
+        sentence = re.sub(r' ([.,:;?!%]+)([ \'"`])', r"\1\2", sentence)
+        sentence = re.sub(r' ([.,:;?!%]+)$', r"\1", sentence)
+        sentence = sentence.replace(" '", "'").replace(" n't", "n't").replace('i m', "I'm").replace(' s ', "'s ").replace(' re ', "'re ").replace(
+         "can not", "cannot")
+        sentence = sentence.replace(" ` ", " '")
+        split = re.split('([.!?] *)', sentence)
+        sentence = ''.join([sen.capitalize() for sen in split])
+        return sentence.strip()
     
     def evaluate(self, sentence):
         sentence = self.preprocess_sentence(sentence)
@@ -85,7 +98,7 @@ class QA_System:
         prediction = self.evaluate(sentence)
         predicted_sentence = self.tokenizer.decode(
             [i for i in prediction if i < self.tokenizer.vocab_size])
-        return predicted_sentence
+        return self.postprocess_sentence(predicted_sentence)
 
     def create_padding_mask(self, x):
         mask = tf.cast(tf.math.equal(x, 0), tf.float32)
