@@ -114,7 +114,7 @@ confirmation_message = 'I will note that.'
 
 # Talking in The Big Bang Theory mode
 tbbt = False
-
+tbbt_message = 'Now talking in the TBBT mode; Type EXIT to stop.'
 
 # Flask route that handles the initial '/' request that loads the index webpage
 @app.route('/')
@@ -294,9 +294,10 @@ def process_query(user_input):
                 return find_astrophotography(search_term=random.choice(val_arr))
             except:
                 return error_msg 
+        # QA System - Activating TBBT Mode with 'I want to talk in TBBT mode'
         elif cmd == 90:
             tbbt = True
-            return 'Now talking in the TBBT mode; Type EXIT to stop.'
+            return tbbt_message
 
         elif cmd == 99:
             # If the user question doesnt match any of the above queries, check the similarity of the query
@@ -580,12 +581,6 @@ def check_condition(items, cont, quantity):
         return 'Yes.'
     else: 
         return 'No.'
-
-############################################################################
-# Finding answers using transformer model QA system
-############################################################################
-
-
 
 if __name__ == '__main__':
     # Load the data from the text file and start the flask website
