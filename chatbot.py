@@ -18,9 +18,9 @@ from PIL import Image
 from skimage import transform
 from shutil import copyfile
 from keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing.text import Tokenizer
-from tensorflow.keras.preprocessing.sequence import pad_sequences
+from keras.models import load_model
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences
 
 # Important Note; The console will output the link where the Chatbot can be accessed in (Usually: http://127.0.0.1:5000/)
 # Please enter that link to interact with the chatbot 
@@ -199,7 +199,8 @@ def check_similarity(user_input):
 def process_query(user_input):
     global oc, tbbt
     if tbbt:
-        if user_input == 'EXIT':
+        print(user_input)
+        if user_input.lower().strip() == 'exit':
             tbbt = False
             return 'Bye!'
         else:
@@ -266,7 +267,6 @@ def process_query(user_input):
             return get_singleton_value('most_favourite_'+params[1])
         # FOL - Are all favourite * in *
         elif cmd == 14: 
-            print('here')
             return check_condition(params[1], 'favourite_'+params[2]+'_'+params[1], 'all')
         # FOL - Are any favourite * in *
         elif cmd == 15: 
@@ -303,6 +303,7 @@ def process_query(user_input):
             # with the questions loaded from 'data.txt' file; if any of them are matching enough (>0.8) 
             # return the answer to it
             return check_similarity(user_input)
+    else:
         return answer
 
 # Function created to fetch json data
@@ -592,8 +593,8 @@ if __name__ == '__main__':
     # Please enter that link to interact with the chatbot 
     load_data()
     # Loading the trained model based on the vgg-16 architecture
-    #model = load_model('trained_model.h5')
-
+    model = load_model('trained_model.h5')
+    # Loading the QA System object from qa_system.py
     qa_sys = QA_System()
     # Run the flask app
     app.run()

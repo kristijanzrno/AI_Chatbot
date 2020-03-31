@@ -61,8 +61,8 @@ class QA_System:
         sentence = sentence.replace(" ( ", " (").replace(" ) ", ") ")
         sentence = re.sub(r' ([.,:;?!%]+)([ \'"`])', r"\1\2", sentence)
         sentence = re.sub(r' ([.,:;?!%]+)$', r"\1", sentence)
-        sentence = sentence.replace(" '", "'").replace(" n't", "n't").replace('i m', "I'm").replace(' s ', "'s ").replace(' re ', "'re ").replace(
-         "can not", "cannot")
+        sentence = sentence.replace(" '", "'").replace(" n't", "n't").replace(' i ', 'I').replace('I m', "I'm").replace(' s ', "'s ").replace(' re ', "'re ").replace(
+         "can not", "cannot").replace(' t ', "'t ")
         sentence = sentence.replace(" ` ", " '")
         split = re.split('([.!?] *)', sentence)
         sentence = ''.join([sen.capitalize() for sen in split])
