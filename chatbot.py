@@ -7,7 +7,7 @@ import json, requests
 import numpy as np
 import wikipedia
 import tensorflow as tf
-import qa_system
+from qa_system import QA_System
 from random import randrange
 from geopy.geocoders import Nominatim
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -112,11 +112,9 @@ next_question = [7, 2, -1, 9, 3, 4, 4, 10, 5, 6, 6, 6, 6, 8, -1, 6, 6, 6, -1, -1
 # Confirmation message
 confirmation_message = 'I will note that.'
 
-# Sequence to Sequence network constants
-input_paragraph_max_seq_length = 298
-input_question_max_seq_length = 32
-num_target_tokens = 3227
-target_max_seq_length = 36
+# Talking in The Big Bang Theory mode
+tbbt = False
+
 
 # Flask route that handles the initial '/' request that loads the index webpage
 @app.route('/')
@@ -590,5 +588,7 @@ if __name__ == '__main__':
     load_data()
     # Loading the trained model based on the vgg-16 architecture
     #model = load_model('trained_model.h5')
+
+    qa_sys = QA_System()
     # Run the flask app
     app.run()
