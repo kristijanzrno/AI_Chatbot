@@ -1,3 +1,4 @@
 ./uploaded/*
 trained_model.h5
 trained_model_new_tuned.h5
+space-*.*
