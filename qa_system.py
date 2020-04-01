@@ -73,11 +73,12 @@ class QA_System:
         sentence = sentence.replace(" ( ", " (").replace(" ) ", ") ")
         sentence = re.sub(r' ([.,:;?!%]+)([ \'"`])', r"\1\2", sentence)
         sentence = re.sub(r' ([.,:;?!%]+)$', r"\1", sentence)
-        sentence = sentence.replace(" '", "'").replace(" n't", "n't").replace(' i ', 'I').replace('i m', "I'm").replace('I m', "I'm").replace(' s ', "'s ").replace(' re ', "'re ").replace(
+        sentence = sentence.replace(" '", "'").replace(" n't", "n't").replace('i m', "I'm").replace('I m', "I'm").replace(' s ', "'s ").replace(' re ', "'re ").replace(
          "can not", "cannot").replace(' t ', "'t ")
         sentence = sentence.replace(" ` ", " '")
         split = re.split('([.!?] *)', sentence)
         sentence = ''.join([sen.capitalize() for sen in split])
+        sentence = sentence.replace(" i ", " I ")
         return sentence.strip()
 
 
@@ -107,6 +108,7 @@ class QA_System:
         prediction = self.evaluate(sentence)
         predicted_sentence = self.tokenizer.decode(
             [i for i in prediction if i < self.tokenizer.vocab_size])
+        print(predicted_sentence)
         return self.postprocess_sentence(predicted_sentence)
 
     # Following Transformer layers functions are adapted from the above mentioned transformer model
