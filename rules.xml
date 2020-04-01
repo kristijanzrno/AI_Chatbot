@@ -270,6 +270,7 @@
   <template><srai>SHOW ME AN IMAGE OF <star index = "2"/></srai></template></category>
 
 
+<!-- Talking in TBBT Mode (implementation of QA system) -->
 
 <category><pattern> TALK IN TBBT MODE </pattern>
   <template>#90</template></category>
