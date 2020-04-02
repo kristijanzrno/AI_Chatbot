@@ -597,6 +597,6 @@ if __name__ == '__main__':
     # Loading the trained model based on the vgg-16 architecture
     model = load_model('trained_model.h5')
     # Loading the QA System object from qa_system.py
-    #qa_sys = QA_System()
+    qa_sys = QA_System()
     # Run the flask app
     app.run()

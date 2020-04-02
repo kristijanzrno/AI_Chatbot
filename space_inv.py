@@ -1,24 +1,18 @@
 import random
-from collections import deque
-import argparse
-import time
-from time import sleep
-from subprocess import Popen
-
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
-
+from collections import deque
+from time import sleep
+from subprocess import Popen
 import gym
-from gym.utils.play import play
-from gym.wrappers.monitoring.video_recorder import VideoRecorder
-
 import tensorflow as tf
 import keras as keras
 from keras.layers import Dense, Conv2D, Dropout, Flatten
 from keras.models import Sequential
 from keras.optimizers import Adam
 
+# Deep Q Learning Network made following this tutorial
+# https://keon.github.io/deep-q-learning/
 class DQN:
     def __init__(self, state_size, action_size, model_depth=4):
         self.state_size = state_size
@@ -37,16 +31,14 @@ class DQN:
         model = Sequential()
         model.add(Conv2D(16, (3,3), input_shape=(self.state_size[0], self.state_size[1], self.model_depth), activation='relu'))
         model.add(Dropout(0.25))
-
         model.add(Conv2D(32, (3,3), activation='relu'))
         model.add(Dropout(0.25))
-
         model.add(Flatten())
         model.add(Dense(self.action_size, activation='linear'))
         model.compile(loss='mse', optimizer=Adam(lr=self.learning_rate))
         return model
 
-    def add_memory(self, state, action, reward, next_state, done):
+    def memorise(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done))
 
     def act(self, state):
@@ -62,24 +54,21 @@ class DQN:
             target = reward
             if not done:
                 target += self.gamma * np.amax(self.model.predict(np.expand_dims(next_state, axis=0)))
-
             target_f = self.model.predict(np.expand_dims(state, axis=0))
             target_f[0][action] = target
             states.append(state)
             targets_f.append(target_f[0])
-
         history = self.model.fit(np.array(states), np.array(targets_f), epochs=1, verbose = 0)
-
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
-
         return history
 
-    def load(self, name):
-        self.model.load_weights(name)
-
-    def save(self, name):
+    # Added wrapper for save_weights and load_weights functions
+    def save_weights(self, name):
         self.model.save_weights(name)
+
+    def load_weights(self, name):
+        self.model.load_weights(name)
 
 def preprocess(obv):
     obv = cv2.cvtColor(cv2.resize(obv, (84, 110)), cv2.COLOR_BGR2GRAY)
@@ -117,7 +106,7 @@ class Space_Invaders:
                 reward = reward if not done else -20
                 short_mem.append(obv)
                 next_state = short_to_state(short_mem)
-                self.agent.add_memory(state, action, reward, next_state, done)
+                self.agent.memorise(state, action, reward, next_state, done)
                 state = next_state
                 if done:
                     print("reward = " + reward)
