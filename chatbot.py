@@ -8,6 +8,7 @@ import numpy as np
 import wikipedia
 import tensorflow as tf
 from qa_system import QA_System
+from subprocess import Popen
 from random import randrange
 from geopy.geocoders import Nominatim
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -138,6 +139,12 @@ def upload_file():
         photo = request.files['file']
         photo.save('uploaded/data/'+photo.filename)
         # Right after this function ends, the classification function will be called
+
+@app.route('/game')
+def play_space_invaders():
+    # Loading the Space Invaders environment
+    Popen(['python3', 'space_inv.py'])
+    return 'success'
 
 # Using nltk lemmatizer to normalise inputs
 # Normalising will be done on questions list once we want to compare the user input with the questions
@@ -590,6 +597,6 @@ if __name__ == '__main__':
     # Loading the trained model based on the vgg-16 architecture
     model = load_model('trained_model.h5')
     # Loading the QA System object from qa_system.py
-    qa_sys = QA_System()
+    #qa_sys = QA_System()
     # Run the flask app
     app.run()
