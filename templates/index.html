@@ -85,6 +85,17 @@
       $("#imageInput").click(function() {
         $("#imgUpload").trigger("click");
       });
+      $("#game").click(function() {
+        $.get("/game", { msg: "__game__" }).done(function() {
+          botMessage =
+            '<div class="chat bot"><div class="user-photo"><img src="../static/robot.png"></div><p class="chat-message">' +
+            "Opening a game... A - Left, D - Right and S - Shoot!" +
+            "</p>";
+          $("#chatlogs").append(botMessage);
+          chatlog.scrollTop = chatlog.scrollHeight;
+        });
+      });
+
 
       $("#imgUpload").change(function() {
         var formData = new FormData();
