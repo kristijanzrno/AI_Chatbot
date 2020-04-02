@@ -70,6 +70,7 @@ class DQN:
     def load_weights(self, name):
         self.model.load_weights(name)
 
+# Adapted the image pre-processing function from https://github.com/floodsung/DQN-Atari-Tensorflow/blob/master/AtariDQN.py
 def preprocess(obv):
     obv = cv2.cvtColor(cv2.resize(obv, (84, 110)), cv2.COLOR_BGR2GRAY)
     obv = obv[26:, :]
