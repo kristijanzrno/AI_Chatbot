@@ -91,7 +91,7 @@
         $.get("/game", { msg: "__game__" }).done(function() {
           botMessage =
             '<div class="chat bot"><div class="user-photo"><img src="../static/robot.png"></div><p class="chat-message">' +
-            "Opening a game... A - Left, D - Right and S - Shoot!" +
+            "Opening a game... A - Left, D - Right and S - Shoot and Space - Pause!" +
             "</p>";
           $("#chatlogs").append(botMessage);
           chatlog.scrollTop = chatlog.scrollHeight;

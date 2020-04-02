@@ -1,7 +1,10 @@
-#!/usr/bin/env python
 from __future__ import print_function
-
 import sys, gym, time
+
+# This script is made by OpenAI 
+# https://github.com/openai/gym/blob/master/examples/agents/keyboard_agent.py
+
+# Modified by Kristijan Zrno, March, 2020 (modifications are commented)
 
 #
 # Test yourself as a learning agent! Pass environment name as a command-line argument, for example:
@@ -26,7 +29,7 @@ def key_press(key, mod):
     if key==0xff0d: human_wants_restart = True
     if key==32: human_sets_pause = not human_sets_pause
     a = int( key - ord('0') )
-    #print(key)
+    # Modified by Kristijan Zrno
     # Remapping default keys to A D S (according to ASCII table)
     if key == 97:
         a = 3
@@ -40,6 +43,8 @@ def key_press(key, mod):
 def key_release(key, mod):
     global human_agent_action
     a = int( key - ord('0') )
+    # Modified by Kristijan Zrno
+    # Remapping default keys to A D S (according to ASCII table)
     if key == 97:
         a = 3
     elif key == 100:
@@ -63,7 +68,6 @@ def rollout(env):
     total_timesteps = 0
     while 1:
         if not skip:
-            #print("taking action {}".format(human_agent_action))
             a = human_agent_action
             total_timesteps += 1
             skip = SKIP_CONTROL
@@ -78,17 +82,20 @@ def rollout(env):
         if window_still_open==False: return False
         if done: break
         if human_wants_restart: break
+        # Modified by Kristijan Zrno
+        # Using the time.sleep(0.04615) to simulate 24fps
         while human_sets_pause:
             env.render()
             time.sleep(0.04615)
         time.sleep(0.04615)
-    print("timesteps %i reward %0.2f" % (total_timesteps, total_reward))
+    # Modified by Kristijan Zrno
+    # Modified environment to close when the game is finished        
+    env.close()
+    exit()
 
-print("ACTIONS={}".format(ACTIONS))
-print("Press keys 1 2 3 ... to take actions 1 2 3 ...")
-print("No keys pressed is taking action 0")
-
-while 1:
+played = False
+while not played:
     window_still_open = rollout(env)
+    played = True
     if window_still_open==False: break
 

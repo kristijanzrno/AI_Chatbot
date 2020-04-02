@@ -140,11 +140,14 @@ def upload_file():
         photo.save('uploaded/data/'+photo.filename)
         # Right after this function ends, the classification function will be called
 
+# Flask route that handles the gameplay
 @app.route('/game')
 def play_space_invaders():
     # Loading the Space Invaders environment
+    # Environments are loaded as chatbot subprocesses, meaning that if the chatbot is closed
+    # the games will be closed as well
     Popen(['python3', 'space_inv.py'])
-    return 'success'
+    return 'Playing...'
 
 # Using nltk lemmatizer to normalise inputs
 # Normalising will be done on questions list once we want to compare the user input with the questions

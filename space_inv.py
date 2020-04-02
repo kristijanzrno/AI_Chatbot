@@ -95,7 +95,7 @@ class Space_Invaders:
         self.action_size = self.chatbot_env.action_space.n
         self.agent = DQN(self.state_size, self.action_size)
         # Loading the saved weights
-        self.agent.load_weights("./space_invaders_trained.h5")
+        self.agent.load_weights("./space_invaders/space_invaders_trained.h5")
     
     # Agent training function, takes weights filepath as input
     def train(self, resume_weights):
@@ -136,15 +136,15 @@ class Space_Invaders:
 
             # Saving every 50th episode        
             if game % 50 == 0:
-                self.agent.save_weights("./space_invaders_"+str(game)+".h5")
+                self.agent.save_weights("./space_invaders/space_invaders_"+str(game)+".h5")
 
     # Function created to start a duel between user and chatbot
     def duel(self):
         # Starting the OpenAI keyboard_agent to let the user play 
-        Popen(['python3', 'keyboard_agent.py', 'SpaceInvaders-v0'])
+        Popen(['python3', './space_invaders/user.py', 'SpaceInvaders-v0'])
         # User game takes some time to load while the chatbot one starts immediately
         # Therefore, wait for a bit before starting the chatbot game
-        sleep(2000)
+        sleep(3)
         self.chatbot_play()
 
     # Function created to utilise the trained agent to play the game
